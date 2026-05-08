@@ -1,61 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BoutiFlow - The Offline-First Hotel Management App</title>
+    <title>BoutiFlow - Offline-First Hotel Management</title>
+    <meta name="description" content="BoutiFlow - Professional, offline-first property management system for boutique hotels, guesthouses, and vacation rentals.">
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
-        rel="stylesheet">
-    <!-- Font Awesome for Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-    <div class="bg-glow"></div>
-    <div class="bg-glow-2"></div>
+
     <header>
         <div class="container">
             <a href="index.html" class="logo">
-                <i class="fa-solid fa-hotel" style="color: var(--accent-primary);"></i>
+                <img src="app-icon.png" alt="BoutiFlow">
                 BoutiFlow
             </a>
             <nav>
-                <a href="#features">Features</a>
-                <a href="support.html">Support</a>
-                <a href="#" class="btn btn-primary" style="padding: 10px 20px; margin-left: 24px;">Download</a>
+                <a href="#features" data-i18n="navFeatures">Features</a>
+                <a href="support.html" data-i18n="navSupport">Support</a>
+                <div class="lang-switcher">
+                    <button onclick="setLang('en')" class="active">EN</button>
+                    <button onclick="setLang('tr')">TR</button>
+                    <button onclick="setLang('de')">DE</button>
+                    <button onclick="setLang('fr')">FR</button>
+                    <button onclick="setLang('es')">ES</button>
+                    <button onclick="setLang('ru')">RU</button>
+                </div>
+                <a href="#" class="btn btn-primary" style="padding: 10px 20px;" data-i18n="navDownload">Download</a>
             </nav>
         </div>
     </header>
 
     <section class="hero">
         <div class="container">
-            <h1>Manage Your Hotel <br><span>Without Limits</span></h1>
-            <p>The professional, offline-first PMS designed for boutique hotels, guesthouses, and vacation rentals. No
-                internet? No problem.</p>
+            <img src="app-icon.png" alt="BoutiFlow" class="hero-icon">
+            <h1 data-i18n="heroTitle">Manage Your Hotel <span>Without Limits</span></h1>
+            <p data-i18n="heroBody">The professional, offline-first PMS designed for boutique hotels, guesthouses, and vacation rentals. No internet? No problem.</p>
 
             <div class="cta-buttons">
                 <a href="#" class="btn btn-primary">
                     <i class="fa-brands fa-apple" style="margin-right: 8px;"></i>
-                    Download on App Store
+                    <span data-i18n="ctaAppStore">Download on App Store</span>
                 </a>
                 <a href="#" class="btn btn-secondary">
                     <i class="fa-brands fa-google-play" style="margin-right: 8px;"></i>
-                    Get it on Google Play
+                    <span data-i18n="ctaGooglePlay">Get it on Google Play</span>
                 </a>
-            </div>
-
-            <div class="hero-mockup">
-                <!-- Placeholder for App Screenshot -->
-                <div style="text-align: center;">
-                    <i class="fa-solid fa-mobile-screen-button"
-                        style="font-size: 4rem; margin-bottom: 20px; display: block;"></i>
-                    App Screenshot Placeholder
-                </div>
             </div>
         </div>
     </section>
@@ -65,15 +57,15 @@
             <div class="stats-grid">
                 <div class="stat-item">
                     <h4>100%</h4>
-                    <p>Offline Capable</p>
+                    <p data-i18n="statOffline">Offline Capable</p>
                 </div>
                 <div class="stat-item">
-                    <h4>0s</h4>
-                    <p>Sync Latency</p>
+                    <h4>6</h4>
+                    <p data-i18n="statLanguages">Languages</p>
                 </div>
                 <div class="stat-item">
                     <h4>50+</h4>
-                    <p>Currencies</p>
+                    <p data-i18n="statCurrencies">Currencies</p>
                 </div>
             </div>
         </div>
@@ -81,61 +73,39 @@
 
     <section id="features" class="features">
         <div class="container">
-            <h2>Everything You Need to Run Your Hotel</h2>
-            <p style="text-align: center; max-width: 600px; margin: 0 auto 60px;">Powerful features packed into a
-                beautiful, easy-to-use mobile interface.</p>
+            <h2 data-i18n="featuresTitle">Everything You Need</h2>
+            <p data-i18n="featuresBody">Powerful features packed into a beautiful, easy-to-use mobile interface.</p>
 
             <div class="feature-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-wifi"></i>
-                    </div>
-                    <h3>Offline First</h3>
-                    <p>Never worry about internet connection again. Your data lives on your device and works instantly,
-                        everywhere.</p>
+                    <div class="feature-icon"><i class="fa-solid fa-wifi-slash"></i></div>
+                    <h3 data-i18n="f1Title">Offline First</h3>
+                    <p data-i18n="f1Body">Never worry about internet. Your data lives on your device and works instantly, everywhere.</p>
                 </div>
-
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-calendar-days"></i>
-                    </div>
-                    <h3>Visual Calendar</h3>
-                    <p>Drag-and-drop booking management. See your availability at a glance with our intuitive 30-day
-                        view.</p>
+                    <div class="feature-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                    <h3 data-i18n="f2Title">Visual Calendar</h3>
+                    <p data-i18n="f2Body">Drag-and-drop booking management. See availability at a glance with our intuitive timeline view.</p>
                 </div>
-
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-                    <h3>Guest CRM</h3>
-                    <p>Know your guests. Track history, preferences, and spending to provide personalized experiences.
-                    </p>
+                    <div class="feature-icon"><i class="fa-solid fa-users"></i></div>
+                    <h3 data-i18n="f3Title">Guest CRM</h3>
+                    <p data-i18n="f3Body">Know your guests. Track history, preferences, and spending to provide personalized experiences.</p>
                 </div>
-
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-chart-pie"></i>
-                    </div>
-                    <h3>Advanced Reports</h3>
-                    <p>Gain insights with occupancy heatmaps, revenue reports, and source analysis. (Premium)</p>
+                    <div class="feature-icon"><i class="fa-solid fa-broom"></i></div>
+                    <h3 data-i18n="f4Title">Housekeeping</h3>
+                    <p data-i18n="f4Body">Track room cleaning status in real-time. Mark rooms clean, dirty, or under maintenance instantly.</p>
                 </div>
-
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                    </div>
-                    <h3>Cloud Backup</h3>
-                    <p>Keep your data safe. Securely sync to the cloud when you're online for peace of mind. (Premium)
-                    </p>
+                    <div class="feature-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                    <h3 data-i18n="f5Title">Smart WhatsApp</h3>
+                    <p data-i18n="f5Body">Send messages to guests in their own language automatically. Multi-language template system built-in.</p>
                 </div>
-
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fa-solid fa-file-invoice-dollar"></i>
-                    </div>
-                    <h3>Finance & Invoicing</h3>
-                    <p>Track payments, manage expenses, and generate professional PDF invoices in seconds.</p>
+                    <div class="feature-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <h3 data-i18n="f6Title">PDF & Reports</h3>
+                    <p data-i18n="f6Body">Generate professional invoices, booking confirmations, and police report exports in seconds.</p>
                 </div>
             </div>
         </div>
@@ -146,40 +116,161 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <a href="index.html" class="logo">
-                        <i class="fa-solid fa-hotel" style="color: var(--accent-primary);"></i>
+                        <img src="app-icon.png" alt="BoutiFlow">
                         BoutiFlow
                     </a>
-                    <p>Empowering small hoteliers worldwide with professional, accessible technology.</p>
+                    <p data-i18n="footerTagline">Empowering small hoteliers worldwide with professional, accessible technology.</p>
                 </div>
-
                 <div class="footer-links">
-                    <h4>Product</h4>
+                    <h4 data-i18n="footerProduct">Product</h4>
                     <ul>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="support.html">Support</a></li>
+                        <li><a href="#features" data-i18n="navFeatures">Features</a></li>
+                        <li><a href="support.html" data-i18n="navSupport">Support</a></li>
                     </ul>
                 </div>
-
                 <div class="footer-links">
-                    <h4>Legal</h4>
+                    <h4 data-i18n="footerLegal">Legal</h4>
                     <ul>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html" data-i18n="navPrivacy">Privacy Policy</a></li>
+                        <li><a href="terms.html" data-i18n="navTerms">Terms of Service</a></li>
                     </ul>
                 </div>
-
                 <div class="footer-links">
-                    <h4>Connect</h4>
+                    <h4 data-i18n="footerConnect">Connect</h4>
                     <ul>
-                        <li><a href="mailto:support@boutiflow.com">Contact Support</a></li>
+                        <li><a href="mailto:support@boutiflow.com" data-i18n="navContact">Contact Support</a></li>
                     </ul>
                 </div>
             </div>
             <div class="copyright">
-                &copy; 2026 BoutiFlow. All rights reserved. Built with Flutter.
+                &copy; 2026 BoutiFlow. All rights reserved.
             </div>
         </div>
     </footer>
-</body>
 
+<script>
+const i18n = {
+    en: {
+        navFeatures: "Features", navSupport: "Support", navDownload: "Download", navPrivacy: "Privacy Policy", navTerms: "Terms of Service", navContact: "Contact Support",
+        heroTitle: 'Manage Your Hotel <span>Without Limits</span>',
+        heroBody: "The professional, offline-first PMS designed for boutique hotels, guesthouses, and vacation rentals.",
+        ctaAppStore: "Download on App Store", ctaGooglePlay: "Get it on Google Play",
+        statOffline: "Offline Capable", statLanguages: "Languages", statCurrencies: "Currencies",
+        featuresTitle: "Everything You Need", featuresBody: "Powerful features packed into a beautiful, easy-to-use mobile interface.",
+        f1Title: "Offline First", f1Body: "Never worry about internet. Your data lives on your device and works instantly, everywhere.",
+        f2Title: "Visual Calendar", f2Body: "Drag-and-drop booking management. See availability at a glance with our intuitive timeline view.",
+        f3Title: "Guest CRM", f3Body: "Know your guests. Track history, preferences, and spending to provide personalized experiences.",
+        f4Title: "Housekeeping", f4Body: "Track room cleaning status in real-time. Mark rooms clean, dirty, or under maintenance instantly.",
+        f5Title: "Smart WhatsApp", f5Body: "Send messages to guests in their own language automatically. Multi-language template system built-in.",
+        f6Title: "PDF & Reports", f6Body: "Generate professional invoices, booking confirmations, and police report exports in seconds.",
+        footerTagline: "Empowering small hoteliers worldwide with professional, accessible technology.",
+        footerProduct: "Product", footerLegal: "Legal", footerConnect: "Connect"
+    },
+    tr: {
+        navFeatures: "Özellikler", navSupport: "Destek", navDownload: "İndir", navPrivacy: "Gizlilik Politikası", navTerms: "Kullanım Koşulları", navContact: "Destek İletişim",
+        heroTitle: 'Otelinizi <span>Sınırsız</span> Yönetin',
+        heroBody: "Butik oteller, pansiyonlar ve kiralık evler için tasarlanmış profesyonel, çevrimdışı çalışan yönetim sistemi.",
+        ctaAppStore: "App Store'dan İndir", ctaGooglePlay: "Google Play'den İndir",
+        statOffline: "Çevrimdışı Çalışır", statLanguages: "Dil Desteği", statCurrencies: "Para Birimi",
+        featuresTitle: "İhtiyacınız Olan Her Şey", featuresBody: "Güçlü özellikler, güzel ve kullanımı kolay bir mobil arayüzde.",
+        f1Title: "Çevrimdışı Öncelikli", f1Body: "İnternet bağlantısı konusunda asla endişelenmeyin. Verileriniz cihazınızda yaşar.",
+        f2Title: "Görsel Takvim", f2Body: "Sürükle-bırak rezervasyon yönetimi. Doluluk durumunu tek bakışta görün.",
+        f3Title: "Misafir CRM", f3Body: "Misafirlerinizi tanıyın. Geçmişi, tercihleri ve harcamaları takip edin.",
+        f4Title: "Oda Temizliği", f4Body: "Oda temizlik durumunu anlık takip edin. Temiz, kirli veya bakımda olarak işaretleyin.",
+        f5Title: "Akıllı WhatsApp", f5Body: "Misafirlerinize kendi dillerinde otomatik mesaj gönderin. Çoklu dil şablon sistemi.",
+        f6Title: "PDF & Raporlar", f6Body: "Profesyonel fatura, rezervasyon onayı ve polis bildirim listesi oluşturun.",
+        footerTagline: "Dünya genelinde küçük otelcilere profesyonel ve erişilebilir teknoloji sunuyoruz.",
+        footerProduct: "Ürün", footerLegal: "Yasal", footerConnect: "İletişim"
+    },
+    de: {
+        navFeatures: "Funktionen", navSupport: "Hilfe", navDownload: "Herunterladen", navPrivacy: "Datenschutz", navTerms: "Nutzungsbedingungen", navContact: "Support kontaktieren",
+        heroTitle: 'Ihr Hotel <span>ohne Grenzen</span> verwalten',
+        heroBody: "Das professionelle, offline-fähige PMS für Boutique-Hotels, Pensionen und Ferienwohnungen.",
+        ctaAppStore: "Im App Store laden", ctaGooglePlay: "Bei Google Play laden",
+        statOffline: "Offline-fähig", statLanguages: "Sprachen", statCurrencies: "Währungen",
+        featuresTitle: "Alles was Sie brauchen", featuresBody: "Leistungsstarke Funktionen in einer schönen, benutzerfreundlichen Oberfläche.",
+        f1Title: "Offline First", f1Body: "Machen Sie sich nie Sorgen um Internet. Ihre Daten arbeiten sofort, überall.",
+        f2Title: "Visueller Kalender", f2Body: "Drag-and-Drop Buchungsverwaltung. Sehen Sie Verfügbarkeit auf einen Blick.",
+        f3Title: "Gäste-CRM", f3Body: "Kennen Sie Ihre Gäste. Verfolgen Sie Verlauf, Vorlieben und Ausgaben.",
+        f4Title: "Zimmerpflege", f4Body: "Echtzeit-Reinigungsstatus. Zimmer als sauber, schmutzig oder in Wartung markieren.",
+        f5Title: "Smart WhatsApp", f5Body: "Senden Sie Nachrichten automatisch in der Sprache Ihrer Gäste.",
+        f6Title: "PDF & Berichte", f6Body: "Erstellen Sie professionelle Rechnungen, Buchungsbestätigungen und Meldeexporte.",
+        footerTagline: "Wir unterstützen kleine Hoteliers weltweit mit professioneller Technologie.",
+        footerProduct: "Produkt", footerLegal: "Rechtliches", footerConnect: "Kontakt"
+    },
+    fr: {
+        navFeatures: "Fonctionnalités", navSupport: "Support", navDownload: "Télécharger", navPrivacy: "Confidentialité", navTerms: "Conditions", navContact: "Contacter le support",
+        heroTitle: 'Gérez votre hôtel <span>sans limites</span>',
+        heroBody: "Le PMS professionnel, hors-ligne, conçu pour les hôtels boutique, maisons d'hôtes et locations de vacances.",
+        ctaAppStore: "Télécharger sur App Store", ctaGooglePlay: "Télécharger sur Google Play",
+        statOffline: "Fonctionne hors-ligne", statLanguages: "Langues", statCurrencies: "Devises",
+        featuresTitle: "Tout ce dont vous avez besoin", featuresBody: "Des fonctionnalités puissantes dans une interface mobile belle et facile à utiliser.",
+        f1Title: "Hors-ligne d'abord", f1Body: "Ne vous souciez jamais d'internet. Vos données vivent sur votre appareil.",
+        f2Title: "Calendrier visuel", f2Body: "Gestion des réservations par glisser-déposer. Voyez la disponibilité d'un coup d'œil.",
+        f3Title: "CRM Invités", f3Body: "Connaissez vos invités. Suivez l'historique, les préférences et les dépenses.",
+        f4Title: "Ménage", f4Body: "Suivez l'état de nettoyage des chambres en temps réel.",
+        f5Title: "WhatsApp intelligent", f5Body: "Envoyez des messages aux invités automatiquement dans leur langue.",
+        f6Title: "PDF & Rapports", f6Body: "Générez des factures professionnelles et des confirmations de réservation.",
+        footerTagline: "Nous accompagnons les petits hôteliers du monde entier avec une technologie professionnelle.",
+        footerProduct: "Produit", footerLegal: "Légal", footerConnect: "Contact"
+    },
+    es: {
+        navFeatures: "Características", navSupport: "Soporte", navDownload: "Descargar", navPrivacy: "Privacidad", navTerms: "Términos", navContact: "Contactar soporte",
+        heroTitle: 'Gestiona tu hotel <span>sin límites</span>',
+        heroBody: "El PMS profesional, sin conexión, diseñado para hoteles boutique, pensiones y alquileres vacacionales.",
+        ctaAppStore: "Descargar en App Store", ctaGooglePlay: "Descargar en Google Play",
+        statOffline: "Funciona sin conexión", statLanguages: "Idiomas", statCurrencies: "Monedas",
+        featuresTitle: "Todo lo que necesitas", featuresBody: "Funciones potentes en una interfaz móvil hermosa y fácil de usar.",
+        f1Title: "Sin conexión primero", f1Body: "Nunca te preocupes por internet. Tus datos viven en tu dispositivo.",
+        f2Title: "Calendario visual", f2Body: "Gestión de reservas con arrastrar y soltar. Ve la disponibilidad de un vistazo.",
+        f3Title: "CRM de huéspedes", f3Body: "Conoce a tus huéspedes. Rastrea historial, preferencias y gastos.",
+        f4Title: "Limpieza", f4Body: "Seguimiento del estado de limpieza de habitaciones en tiempo real.",
+        f5Title: "WhatsApp inteligente", f5Body: "Envía mensajes a los huéspedes automáticamente en su idioma.",
+        f6Title: "PDF e informes", f6Body: "Genera facturas profesionales y confirmaciones de reserva en segundos.",
+        footerTagline: "Empoderando a pequeños hoteleros en todo el mundo con tecnología profesional.",
+        footerProduct: "Producto", footerLegal: "Legal", footerConnect: "Contacto"
+    },
+    ru: {
+        navFeatures: "Функции", navSupport: "Поддержка", navDownload: "Скачать", navPrivacy: "Конфиденциальность", navTerms: "Условия", navContact: "Связаться с поддержкой",
+        heroTitle: 'Управляйте отелем <span>без ограничений</span>',
+        heroBody: "Профессиональная офлайн-система управления для бутик-отелей, гостевых домов и арендных объектов.",
+        ctaAppStore: "Скачать в App Store", ctaGooglePlay: "Скачать в Google Play",
+        statOffline: "Работает офлайн", statLanguages: "Языков", statCurrencies: "Валют",
+        featuresTitle: "Всё что вам нужно", featuresBody: "Мощные функции в красивом и удобном мобильном интерфейсе.",
+        f1Title: "Офлайн прежде всего", f1Body: "Никогда не беспокойтесь об интернете. Ваши данные работают мгновенно.",
+        f2Title: "Визуальный календарь", f2Body: "Управление бронированиями перетаскиванием. Видите доступность с первого взгляда.",
+        f3Title: "CRM гостей", f3Body: "Знайте своих гостей. Отслеживайте историю, предпочтения и расходы.",
+        f4Title: "Уборка", f4Body: "Отслеживайте статус уборки номеров в реальном времени.",
+        f5Title: "Умный WhatsApp", f5Body: "Отправляйте сообщения гостям автоматически на их языке.",
+        f6Title: "PDF и отчёты", f6Body: "Создавайте профессиональные счета и подтверждения бронирования.",
+        footerTagline: "Помогаем маленьким отельерам по всему миру профессиональными технологиями.",
+        footerProduct: "Продукт", footerLegal: "Правовая информация", footerConnect: "Связь"
+    }
+};
+
+function setLang(lang) {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang] && i18n[lang][key]) {
+            if (key === 'heroTitle') {
+                el.innerHTML = i18n[lang][key];
+            } else {
+                el.textContent = i18n[lang][key];
+            }
+        }
+    });
+    document.querySelectorAll('.lang-switcher button').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
+    });
+    document.documentElement.lang = lang;
+    localStorage.setItem('boutiflow-lang', lang);
+}
+
+// Auto-detect language
+const savedLang = localStorage.getItem('boutiflow-lang');
+const browserLang = navigator.language.substring(0, 2);
+const defaultLang = savedLang || (['en','tr','de','fr','es','ru'].includes(browserLang) ? browserLang : 'en');
+document.addEventListener('DOMContentLoaded', () => setLang(defaultLang));
+</script>
+</body>
 </html>
