@@ -354,6 +354,16 @@ footer {
 .legal-content p { color: var(--text-grey); margin-bottom: 16px; font-weight: 500; }
 .legal-content a { color: var(--blue); text-decoration: underline; }
 
+.language-select {
+    border: 2px solid var(--text-black);
+    border-radius: 12px;
+    background: var(--white);
+    color: var(--text-black);
+    font: 700 0.9rem 'Outfit', sans-serif;
+    padding: 8px 12px;
+    box-shadow: 3px 3px 0 var(--text-black);
+}
+
 .faq-item {
     background: var(--white);
     border: var(--border-width) solid var(--text-black);
@@ -397,4 +407,5 @@ footer {
 @media (max-width: 480px) {
     .footer-content { grid-template-columns: 1fr; }
     nav a:not(.btn) { display: none; }
+    .language-select { max-width: 130px; }
 }

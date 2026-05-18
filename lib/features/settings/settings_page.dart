@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +14,8 @@ import '../../providers/booking_providers.dart';
 import '../../core/services/plan_limits.dart';
 import '../../core/widgets/upgrade_prompt.dart';
 import '../../core/theme/neo_brutalist_theme.dart';
+import 'account_deletion_request.dart';
+import 'legal_page_links.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -35,7 +38,7 @@ class SettingsPage extends ConsumerWidget {
     const textMuted = NeoBrutalistTheme.grey;
     const inputBg = NeoBrutalistTheme.white;
     const inputBorder = NeoBrutalistTheme.black;
-    final borderColor = NeoBrutalistTheme.black.withOpacity(0.1);
+    final borderColor = NeoBrutalistTheme.black.withValues(alpha: 0.1);
     const primary = NeoBrutalistTheme.blue;
     final supportedLanguageNames =
         supportedLanguageCodes.map(AppLocalizations.languageLabel).join(' • ');
@@ -107,7 +110,7 @@ class SettingsPage extends ConsumerWidget {
                         ),
                         const SizedBox(height: 16),
                         DropdownButtonFormField<String>(
-                          value: user.currency,
+                          initialValue: user.currency,
                           style: GoogleFonts.inter(color: textPrimary),
                           decoration: InputDecoration(
                             labelText: l10n.t('currency'),
@@ -245,6 +248,20 @@ class SettingsPage extends ConsumerWidget {
                               color: textMuted),
                           onTap: () => context.push('/settings/room-types'),
                         ),
+                        const SizedBox(height: 16),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading:
+                              Icon(Icons.source_rounded, color: textSecondary),
+                          title: Text(l10n.t('bookingSources'),
+                              style: GoogleFonts.inter(color: textPrimary)),
+                          subtitle: Text(l10n.t('activeSources'),
+                              style: GoogleFonts.inter(color: textMuted)),
+                          trailing: Icon(Icons.chevron_right_rounded,
+                              color: textMuted),
+                          onTap: () =>
+                              context.push('/settings/booking-channels'),
+                        ),
                       ],
                     ),
                   ),
@@ -366,7 +383,7 @@ class SettingsPage extends ConsumerWidget {
                         subtitle: Text(l10n.t('backupRemindersSubtitle'),
                             style: GoogleFonts.inter(color: textMuted)),
                         value: appState.backupReminders,
-                        activeColor: primary,
+                        activeThumbColor: primary,
                         onChanged: (val) => ref
                             .read(appStateProvider.notifier)
                             .toggleBackupReminders(val),
@@ -613,6 +630,60 @@ class SettingsPage extends ConsumerWidget {
                   ),
 
                   const SizedBox(height: 32),
+
+                  // Legal & Support Section
+                  _SettingsSection(
+                    title: l10n.t('legalSupport'),
+                    children: [
+                      ListTile(
+                        leading: Icon(Icons.privacy_tip_rounded,
+                            color: textSecondary),
+                        title: Text(l10n.t('privacyPolicy'),
+                            style: GoogleFonts.inter(color: textPrimary)),
+                        subtitle: Text(l10n.t('privacyPolicySub'),
+                            style: GoogleFonts.inter(color: textMuted)),
+                        trailing:
+                            Icon(Icons.open_in_new_rounded, color: textMuted),
+                        onTap: () => _openWebPage(context, 'privacy.html'),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.description_rounded,
+                            color: textSecondary),
+                        title: Text(l10n.t('termsOfService'),
+                            style: GoogleFonts.inter(color: textPrimary)),
+                        subtitle: Text(l10n.t('termsOfServiceSub'),
+                            style: GoogleFonts.inter(color: textMuted)),
+                        trailing:
+                            Icon(Icons.open_in_new_rounded, color: textMuted),
+                        onTap: () => _openWebPage(context, 'terms.html'),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.help_outline_rounded,
+                            color: textSecondary),
+                        title: Text(l10n.t('helpSupport'),
+                            style: GoogleFonts.inter(color: textPrimary)),
+                        subtitle: Text(l10n.t('helpSupportSub'),
+                            style: GoogleFonts.inter(color: textMuted)),
+                        trailing:
+                            Icon(Icons.open_in_new_rounded, color: textMuted),
+                        onTap: () => _openWebPage(context, 'support.html'),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.delete_forever_rounded,
+                            color: Colors.redAccent),
+                        title: Text(l10n.t('accountDeletionRequest'),
+                            style: GoogleFonts.inter(color: Colors.redAccent)),
+                        subtitle: Text(l10n.t('accountDeletionRequestSub'),
+                            style: GoogleFonts.inter(color: textMuted)),
+                        trailing: const Icon(Icons.chevron_right_rounded,
+                            color: Colors.redAccent),
+                        onTap: () =>
+                            _confirmAccountDeletionRequest(context, user),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 32),
                   OutlinedButton.icon(
                     onPressed: () {
                       ref.read(appStateProvider.notifier).signOut();
@@ -636,6 +707,63 @@ class SettingsPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _openWebPage(BuildContext context, String page) async {
+    final url = buildLegalPageUri(page, context.l10n.locale.languageCode);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _confirmAccountDeletionRequest(
+    BuildContext context,
+    UserProfile user,
+  ) async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            backgroundColor: NeoBrutalistTheme.cream,
+            title: Text(
+              l10n.t('accountDeletionDialogTitle'),
+              style: NeoBrutalistTheme.titleLarge,
+            ),
+            content: Text(
+              l10n.t('accountDeletionDialogBody'),
+              style: NeoBrutalistTheme.bodyMedium,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: Text(l10n.t('cancel')),
+              ),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  foregroundColor: NeoBrutalistTheme.white,
+                ),
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: Text(l10n.t('sendRequest')),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (!confirmed || !context.mounted) return;
+
+    final uri = buildAccountDeletionRequestUri(user);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+      return;
+    }
+
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.t('accountDeletionMailError'))),
+    );
+    _openWebPage(context, 'support.html');
   }
 
   void _showLanguagePicker(
@@ -762,7 +890,7 @@ class SettingsPage extends ConsumerWidget {
     UserProfile user,
     String code,
   ) async {
-    ref.read(appStateProvider.notifier).changeLanguage(code);
+    await ref.read(appStateProvider.notifier).changeLanguage(code);
     await ref.read(boutiFlowServiceProvider).updateHotelProfile(
           name: user.hotelName,
           languageCode: code,
@@ -821,7 +949,6 @@ class SettingsPage extends ConsumerWidget {
                 const SizedBox(height: 16),
                 roomTypesAsync.when(
                   data: (types) {
-                    if (types.isEmpty) return const SizedBox.shrink();
                     if (selectedTypeId == null && types.isNotEmpty) {
                       final std =
                           types.where((t) => t.name == 'Standard').firstOrNull;
@@ -829,7 +956,8 @@ class SettingsPage extends ConsumerWidget {
                     }
 
                     return DropdownButtonFormField<String>(
-                      value: selectedTypeId,
+                      initialValue: selectedTypeId,
+                      dropdownColor: NeoBrutalistTheme.white,
                       style: NeoBrutalistTheme.bodyLarge,
                       decoration: InputDecoration(
                         labelText: l10n.t('roomType'),
@@ -842,16 +970,28 @@ class SettingsPage extends ConsumerWidget {
                               color: NeoBrutalistTheme.black, width: 2),
                         ),
                       ),
-                      items: types
-                          .map<DropdownMenuItem<String>>(
-                              (t) => DropdownMenuItem(
-                                    value: t.id,
-                                    child: Text(t.name),
-                                  ))
-                          .toList(),
-                      onChanged: (val) {
-                        selectedTypeId = val;
-                      },
+                      items: types.isEmpty
+                          ? [
+                              DropdownMenuItem<String>(
+                                value: null,
+                                child: Text(l10n.t('noRoomTypesYet'),
+                                    style: NeoBrutalistTheme.bodyMedium
+                                        .copyWith(
+                                            color: NeoBrutalistTheme.grey)),
+                              )
+                            ]
+                          : types
+                              .map<DropdownMenuItem<String>>(
+                                  (t) => DropdownMenuItem(
+                                        value: t.id,
+                                        child: Text(t.name),
+                                      ))
+                              .toList(),
+                      onChanged: types.isEmpty
+                          ? null
+                          : (val) {
+                              selectedTypeId = val;
+                            },
                     );
                   },
                   loading: () => const LinearProgressIndicator(

@@ -8,36 +8,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body data-legal-page="privacy">
     <header>
         <div class="container">
             <a href="index.html" class="logo"><img src="app-icon.png" alt="BoutiFlow"> BoutiFlow</a>
             <nav>
-                <a href="index.html">Home</a>
-                <a href="support.html">Support</a>
+                <a id="nav-home" href="index.html">Home</a>
+                <a id="nav-secondary" href="support.html">Support</a>
+                <select id="language-select" class="language-select" aria-label="Language"></select>
             </nav>
         </div>
     </header>
     <main class="legal-content">
-        <h1>Privacy Policy</h1>
-        <p class="last-updated">Last updated: May 2026</p>
-        <h2>1. Introduction</h2>
-        <p>Welcome to BoutiFlow. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you use our mobile application and tell you about your privacy rights.</p>
-        <h2>2. Data We Collect</h2>
-        <p>BoutiFlow primarily operates as an offline-first application. The data you enter (such as reservations, guest details, and room settings) is stored locally on your device. If you opt into cloud backup or premium features, your data is securely transmitted and stored using industry-standard encryption.</p>
-        <h2>3. How We Use Your Data</h2>
-        <p>We use your data solely to provide the core functionalities of the BoutiFlow application, such as managing bookings and generating reports. We do not sell your personal data to third parties.</p>
-        <h2>4. Data Security</h2>
-        <p>We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used, or accessed in an unauthorized way, altered, or disclosed.</p>
-        <h2>5. Your Rights</h2>
-        <p>You have the right to access, correct, or delete your personal data stored within the app. For cloud-synced data, you can request account deletion at any time through the support section.</p>
-        <h2>6. Contact Us</h2>
-        <p>If you have any questions about this privacy policy, please contact us at <a href="mailto:support@boutiflow.com">support@boutiflow.com</a>.</p>
+        <h1 id="legal-title">Privacy Policy</h1>
+        <p id="legal-updated" class="last-updated">Last updated: May 2026</p>
+        <div id="legal-sections">
+            <h2>1. Introduction</h2>
+            <p>Welcome to BoutiFlow. We respect your privacy and are committed to protecting your personal data.</p>
+        </div>
     </main>
     <footer>
         <div class="container">
-            <div class="copyright">&copy; 2026 BoutiFlow. All rights reserved.</div>
+            <div id="copyright" class="copyright">&copy; 2026 BoutiFlow. All rights reserved.</div>
         </div>
     </footer>
+    <script src="legal_pages.js"></script>
 </body>
 </html>
