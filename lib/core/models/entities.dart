@@ -293,6 +293,7 @@ class UserProfile {
     this.checkInHour = '14:00',
     this.checkOutHour = '11:00',
     this.defaultRoomPrice = 0.0,
+    this.logoUrl, // New v10
   });
 
   final String hotelId;
@@ -305,6 +306,7 @@ class UserProfile {
   final String checkInHour;
   final String checkOutHour;
   final double defaultRoomPrice;
+  final String? logoUrl; // New v10
 
   UserProfile copyWith({
     String? hotelId,
@@ -314,6 +316,7 @@ class UserProfile {
     String? checkInHour,
     String? checkOutHour,
     double? defaultRoomPrice,
+    String? logoUrl, // New v10
   }) {
     return UserProfile(
       hotelId: hotelId ?? this.hotelId,
@@ -326,6 +329,7 @@ class UserProfile {
       checkInHour: checkInHour ?? this.checkInHour,
       checkOutHour: checkOutHour ?? this.checkOutHour,
       defaultRoomPrice: defaultRoomPrice ?? this.defaultRoomPrice,
+      logoUrl: logoUrl ?? this.logoUrl, // New v10
     );
   }
 }
@@ -338,6 +342,7 @@ class Hotel {
   final String checkInHour; // "14:00"
   final String checkOutHour; // "11:00"
   final double defaultRoomPrice;
+  final String? logoUrl; // New v10
   final DateTime? updatedAt;
 
   const Hotel({
@@ -348,6 +353,7 @@ class Hotel {
     this.checkInHour = '14:00',
     this.checkOutHour = '11:00',
     this.defaultRoomPrice = 0.0,
+    this.logoUrl, // New v10
     this.updatedAt,
   });
 
@@ -359,6 +365,7 @@ class Hotel {
     String? checkInHour,
     String? checkOutHour,
     double? defaultRoomPrice,
+    String? logoUrl, // New v10
     DateTime? updatedAt,
   }) {
     return Hotel(
@@ -369,6 +376,7 @@ class Hotel {
       checkInHour: checkInHour ?? this.checkInHour,
       checkOutHour: checkOutHour ?? this.checkOutHour,
       defaultRoomPrice: defaultRoomPrice ?? this.defaultRoomPrice,
+      logoUrl: logoUrl ?? this.logoUrl, // New v10
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }

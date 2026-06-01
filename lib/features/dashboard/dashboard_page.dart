@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:io';
 
 import '../../state/app_state.dart';
 import '../../core/localization/app_localizations.dart';
@@ -26,7 +27,7 @@ class DashboardPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // === HEADER ===
-                _buildHeader(user?.hotelName ?? 'BoutiFlow', l10n),
+                _buildHeader(user?.hotelName ?? 'BoutiFlow', l10n, logoUrl: user?.logoUrl),
                 const SizedBox(height: 24),
 
                 // === ADD BOOKING BUTTON ===
@@ -142,7 +143,7 @@ class DashboardPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(String hotelName, AppLocalizations l10n) {
+  Widget _buildHeader(String hotelName, AppLocalizations l10n, {String? logoUrl}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -167,16 +168,56 @@ class DashboardPage extends ConsumerWidget {
           ),
         ),
         Container(
-          padding: const EdgeInsets.all(12),
-          decoration:
-              NeoBrutalistTheme.cardDecoration(NeoBrutalistTheme.yellow),
-          child: const Icon(
-            Icons.hotel_rounded,
-            color: NeoBrutalistTheme.black,
-            size: 28,
+          width: 52,
+          height: 52,
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            color: NeoBrutalistTheme.yellow,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: NeoBrutalistTheme.black, width: 2),
+            boxShadow: const [
+              BoxShadow(
+                color: NeoBrutalistTheme.black,
+                offset: Offset(3, 3),
+              )
+            ],
           ),
+          child: _buildLogoWidget(logoUrl),
         ),
       ],
+    );
+  }
+
+  Widget _buildLogoWidget(String? logoUrl) {
+    if (logoUrl == null || logoUrl.isEmpty) {
+      return const Icon(
+        Icons.hotel_rounded,
+        color: NeoBrutalistTheme.black,
+        size: 26,
+      );
+    }
+    if (logoUrl.startsWith('http')) {
+      return Image.network(
+        logoUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => const Icon(
+          Icons.hotel_rounded,
+          color: NeoBrutalistTheme.black,
+          size: 26,
+        ),
+      );
+    }
+    final file = File(logoUrl);
+    if (file.existsSync()) {
+      return Image.file(
+        file,
+        fit: BoxFit.cover,
+      );
+    }
+    return const Icon(
+      Icons.hotel_rounded,
+      color: NeoBrutalistTheme.black,
+      size: 26,
     );
   }
 

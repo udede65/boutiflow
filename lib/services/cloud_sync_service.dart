@@ -58,10 +58,11 @@ class CloudSyncService {
           'id': hotelId,
           'name': hotelData['name'],
           'currency': hotelData['currency'] ?? 'EUR',
-          'default_language': hotelData['languageCode'] ?? 'en',
+          'default_language': hotelData['defaultLanguage'] ?? 'en',
           'check_in_hour': hotelData['checkInHour'] ?? '14:00',
           'check_out_hour': hotelData['checkOutHour'] ?? '11:00',
           'default_room_price': hotelData['defaultRoomPrice'] ?? 0.0,
+          'logo_url': hotelData['logoUrl'], // New v10
           'updated_at': DateTime.now().toIso8601String(),
         });
         pushed++;
@@ -189,14 +190,50 @@ class CloudSyncService {
     if (!_initialized) return;
 
     try {
+      final hotelData = await _localDb.getHotel();
+      final logoUrl = hotelData?['logoUrl'];
       await _client.from('hotels').upsert({
         'id': hotelId,
         'name': name,
         'currency': currency,
+        'logo_url': logoUrl, // New v10
         'updated_at': DateTime.now().toIso8601String(),
       });
     } catch (e) {
       debugPrint('Push hotel error: $e');
+    }
+  }
+
+  /// Upload hotel logo to Supabase Storage
+  Future<String?> uploadHotelLogo(String hotelId, Uint8List fileBytes, String fileName) async {
+    if (!_initialized) return null;
+    try {
+      final path = 'logos/$hotelId/$fileName';
+      try {
+        await _client.storage.from('hotel-logos').uploadBinary(
+          path,
+          fileBytes,
+          fileOptions: const FileOptions(upsert: true),
+        );
+      } catch (e) {
+        // Create bucket if it doesn't exist
+        debugPrint('Hotel logos bucket not found or error, creating: $e');
+        try {
+          await _client.storage.createBucket('hotel-logos', const BucketOptions(public: true));
+          await _client.storage.from('hotel-logos').uploadBinary(
+            path,
+            fileBytes,
+            fileOptions: const FileOptions(upsert: true),
+          );
+        } catch (err) {
+          debugPrint('Failed to create bucket and upload: $err');
+          rethrow;
+        }
+      }
+      return _client.storage.from('hotel-logos').getPublicUrl(path);
+    } catch (e) {
+      debugPrint('Supabase upload logo error: $e');
+      return null;
     }
   }
 
@@ -262,6 +299,7 @@ class CloudSyncService {
         checkInHour: row['check_in_hour']?.toString(),
         checkOutHour: row['check_out_hour']?.toString(),
         defaultRoomPrice: (row['default_room_price'] as num?)?.toDouble(),
+        logoUrl: row['logo_url']?.toString(), // New v10
       );
 
       return RestoreResult(success: true, restoredCount: 1);

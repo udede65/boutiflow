@@ -69,6 +69,12 @@ class $HotelsTable extends Hotels with TableInfo<$HotelsTable, Hotel> {
   late final GeneratedColumn<String> city = GeneratedColumn<String>(
       'city', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _logoUrlMeta =
+      const VerificationMeta('logoUrl');
+  @override
+  late final GeneratedColumn<String> logoUrl = GeneratedColumn<String>(
+      'logo_url', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -94,6 +100,7 @@ class $HotelsTable extends Hotels with TableInfo<$HotelsTable, Hotel> {
         defaultRoomPrice,
         country,
         city,
+        logoUrl,
         createdAt,
         updatedAt
       ];
@@ -154,6 +161,10 @@ class $HotelsTable extends Hotels with TableInfo<$HotelsTable, Hotel> {
       context.handle(
           _cityMeta, city.isAcceptableOrUnknown(data['city']!, _cityMeta));
     }
+    if (data.containsKey('logo_url')) {
+      context.handle(_logoUrlMeta,
+          logoUrl.isAcceptableOrUnknown(data['logo_url']!, _logoUrlMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -189,6 +200,8 @@ class $HotelsTable extends Hotels with TableInfo<$HotelsTable, Hotel> {
           .read(DriftSqlType.string, data['${effectivePrefix}country']),
       city: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}city']),
+      logoUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}logo_url']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       updatedAt: attachedDatabase.typeMapping
@@ -212,6 +225,7 @@ class Hotel extends DataClass implements Insertable<Hotel> {
   final double defaultRoomPrice;
   final String? country;
   final String? city;
+  final String? logoUrl;
   final DateTime createdAt;
   final DateTime? updatedAt;
   const Hotel(
@@ -224,6 +238,7 @@ class Hotel extends DataClass implements Insertable<Hotel> {
       required this.defaultRoomPrice,
       this.country,
       this.city,
+      this.logoUrl,
       required this.createdAt,
       this.updatedAt});
   @override
@@ -241,6 +256,9 @@ class Hotel extends DataClass implements Insertable<Hotel> {
     }
     if (!nullToAbsent || city != null) {
       map['city'] = Variable<String>(city);
+    }
+    if (!nullToAbsent || logoUrl != null) {
+      map['logo_url'] = Variable<String>(logoUrl);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || updatedAt != null) {
@@ -262,6 +280,9 @@ class Hotel extends DataClass implements Insertable<Hotel> {
           ? const Value.absent()
           : Value(country),
       city: city == null && nullToAbsent ? const Value.absent() : Value(city),
+      logoUrl: logoUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(logoUrl),
       createdAt: Value(createdAt),
       updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
@@ -282,6 +303,7 @@ class Hotel extends DataClass implements Insertable<Hotel> {
       defaultRoomPrice: serializer.fromJson<double>(json['defaultRoomPrice']),
       country: serializer.fromJson<String?>(json['country']),
       city: serializer.fromJson<String?>(json['city']),
+      logoUrl: serializer.fromJson<String?>(json['logoUrl']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
@@ -299,6 +321,7 @@ class Hotel extends DataClass implements Insertable<Hotel> {
       'defaultRoomPrice': serializer.toJson<double>(defaultRoomPrice),
       'country': serializer.toJson<String?>(country),
       'city': serializer.toJson<String?>(city),
+      'logoUrl': serializer.toJson<String?>(logoUrl),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
@@ -314,6 +337,7 @@ class Hotel extends DataClass implements Insertable<Hotel> {
           double? defaultRoomPrice,
           Value<String?> country = const Value.absent(),
           Value<String?> city = const Value.absent(),
+          Value<String?> logoUrl = const Value.absent(),
           DateTime? createdAt,
           Value<DateTime?> updatedAt = const Value.absent()}) =>
       Hotel(
@@ -326,6 +350,7 @@ class Hotel extends DataClass implements Insertable<Hotel> {
         defaultRoomPrice: defaultRoomPrice ?? this.defaultRoomPrice,
         country: country.present ? country.value : this.country,
         city: city.present ? city.value : this.city,
+        logoUrl: logoUrl.present ? logoUrl.value : this.logoUrl,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
       );
@@ -347,6 +372,7 @@ class Hotel extends DataClass implements Insertable<Hotel> {
           : this.defaultRoomPrice,
       country: data.country.present ? data.country.value : this.country,
       city: data.city.present ? data.city.value : this.city,
+      logoUrl: data.logoUrl.present ? data.logoUrl.value : this.logoUrl,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -364,6 +390,7 @@ class Hotel extends DataClass implements Insertable<Hotel> {
           ..write('defaultRoomPrice: $defaultRoomPrice, ')
           ..write('country: $country, ')
           ..write('city: $city, ')
+          ..write('logoUrl: $logoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -381,6 +408,7 @@ class Hotel extends DataClass implements Insertable<Hotel> {
       defaultRoomPrice,
       country,
       city,
+      logoUrl,
       createdAt,
       updatedAt);
   @override
@@ -396,6 +424,7 @@ class Hotel extends DataClass implements Insertable<Hotel> {
           other.defaultRoomPrice == this.defaultRoomPrice &&
           other.country == this.country &&
           other.city == this.city &&
+          other.logoUrl == this.logoUrl &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -410,6 +439,7 @@ class HotelsCompanion extends UpdateCompanion<Hotel> {
   final Value<double> defaultRoomPrice;
   final Value<String?> country;
   final Value<String?> city;
+  final Value<String?> logoUrl;
   final Value<DateTime> createdAt;
   final Value<DateTime?> updatedAt;
   final Value<int> rowid;
@@ -423,6 +453,7 @@ class HotelsCompanion extends UpdateCompanion<Hotel> {
     this.defaultRoomPrice = const Value.absent(),
     this.country = const Value.absent(),
     this.city = const Value.absent(),
+    this.logoUrl = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -437,6 +468,7 @@ class HotelsCompanion extends UpdateCompanion<Hotel> {
     this.defaultRoomPrice = const Value.absent(),
     this.country = const Value.absent(),
     this.city = const Value.absent(),
+    this.logoUrl = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -452,6 +484,7 @@ class HotelsCompanion extends UpdateCompanion<Hotel> {
     Expression<double>? defaultRoomPrice,
     Expression<String>? country,
     Expression<String>? city,
+    Expression<String>? logoUrl,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -466,6 +499,7 @@ class HotelsCompanion extends UpdateCompanion<Hotel> {
       if (defaultRoomPrice != null) 'default_room_price': defaultRoomPrice,
       if (country != null) 'country': country,
       if (city != null) 'city': city,
+      if (logoUrl != null) 'logo_url': logoUrl,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -482,6 +516,7 @@ class HotelsCompanion extends UpdateCompanion<Hotel> {
       Value<double>? defaultRoomPrice,
       Value<String?>? country,
       Value<String?>? city,
+      Value<String?>? logoUrl,
       Value<DateTime>? createdAt,
       Value<DateTime?>? updatedAt,
       Value<int>? rowid}) {
@@ -495,6 +530,7 @@ class HotelsCompanion extends UpdateCompanion<Hotel> {
       defaultRoomPrice: defaultRoomPrice ?? this.defaultRoomPrice,
       country: country ?? this.country,
       city: city ?? this.city,
+      logoUrl: logoUrl ?? this.logoUrl,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -531,6 +567,9 @@ class HotelsCompanion extends UpdateCompanion<Hotel> {
     if (city.present) {
       map['city'] = Variable<String>(city.value);
     }
+    if (logoUrl.present) {
+      map['logo_url'] = Variable<String>(logoUrl.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -555,6 +594,7 @@ class HotelsCompanion extends UpdateCompanion<Hotel> {
           ..write('defaultRoomPrice: $defaultRoomPrice, ')
           ..write('country: $country, ')
           ..write('city: $city, ')
+          ..write('logoUrl: $logoUrl, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -5055,6 +5095,7 @@ typedef $$HotelsTableCreateCompanionBuilder = HotelsCompanion Function({
   Value<double> defaultRoomPrice,
   Value<String?> country,
   Value<String?> city,
+  Value<String?> logoUrl,
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
   Value<int> rowid,
@@ -5069,6 +5110,7 @@ typedef $$HotelsTableUpdateCompanionBuilder = HotelsCompanion Function({
   Value<double> defaultRoomPrice,
   Value<String?> country,
   Value<String?> city,
+  Value<String?> logoUrl,
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
   Value<int> rowid,
@@ -5232,6 +5274,9 @@ class $$HotelsTableFilterComposer
 
   ColumnFilters<String> get city => $composableBuilder(
       column: $table.city, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get logoUrl => $composableBuilder(
+      column: $table.logoUrl, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -5447,6 +5492,9 @@ class $$HotelsTableOrderingComposer
   ColumnOrderings<String> get city => $composableBuilder(
       column: $table.city, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get logoUrl => $composableBuilder(
+      column: $table.logoUrl, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -5489,6 +5537,9 @@ class $$HotelsTableAnnotationComposer
 
   GeneratedColumn<String> get city =>
       $composableBuilder(column: $table.city, builder: (column) => column);
+
+  GeneratedColumn<String> get logoUrl =>
+      $composableBuilder(column: $table.logoUrl, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -5705,6 +5756,7 @@ class $$HotelsTableTableManager extends RootTableManager<
             Value<double> defaultRoomPrice = const Value.absent(),
             Value<String?> country = const Value.absent(),
             Value<String?> city = const Value.absent(),
+            Value<String?> logoUrl = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime?> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -5719,6 +5771,7 @@ class $$HotelsTableTableManager extends RootTableManager<
             defaultRoomPrice: defaultRoomPrice,
             country: country,
             city: city,
+            logoUrl: logoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -5733,6 +5786,7 @@ class $$HotelsTableTableManager extends RootTableManager<
             Value<double> defaultRoomPrice = const Value.absent(),
             Value<String?> country = const Value.absent(),
             Value<String?> city = const Value.absent(),
+            Value<String?> logoUrl = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime?> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -5747,6 +5801,7 @@ class $$HotelsTableTableManager extends RootTableManager<
             defaultRoomPrice: defaultRoomPrice,
             country: country,
             city: city,
+            logoUrl: logoUrl,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,

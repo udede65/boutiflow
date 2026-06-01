@@ -41,9 +41,6 @@ mixin _$GuestModel {
   $GuestModelCopyWith<GuestModel> get copyWith =>
       _$GuestModelCopyWithImpl<GuestModel>(this as GuestModel, _$identity);
 
-  /// Serializes this GuestModel to a JSON map.
-  Map<String, dynamic> toJson();
-
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
@@ -70,7 +67,6 @@ mixin _$GuestModel {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -425,7 +421,7 @@ extension GuestModelPatterns on GuestModel {
 }
 
 /// @nodoc
-@JsonSerializable()
+
 class _GuestModel implements GuestModel {
   const _GuestModel(
       {required this.id,
@@ -440,8 +436,6 @@ class _GuestModel implements GuestModel {
       this.notes,
       @JsonKey(name: 'created_at') this.createdAt,
       @JsonKey(name: 'updated_at') this.updatedAt});
-  factory _GuestModel.fromJson(Map<String, dynamic> json) =>
-      _$GuestModelFromJson(json);
 
   @override
   final String id;
@@ -485,13 +479,6 @@ class _GuestModel implements GuestModel {
       __$GuestModelCopyWithImpl<_GuestModel>(this, _$identity);
 
   @override
-  Map<String, dynamic> toJson() {
-    return _$GuestModelToJson(
-      this,
-    );
-  }
-
-  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -517,7 +504,6 @@ class _GuestModel implements GuestModel {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,

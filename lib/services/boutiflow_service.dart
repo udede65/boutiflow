@@ -550,6 +550,7 @@ class BoutiFlowService {
     String? checkInHour,
     String? checkOutHour,
     double? defaultRoomPrice,
+    String? logoUrl, // New v10
   }) async {
     await db.into(db.hotels).insertOnConflictUpdate(
           HotelsCompanion.insert(
@@ -560,9 +561,19 @@ class BoutiFlowService {
             checkInHour: Value(checkInHour ?? '14:00'),
             checkOutHour: Value(checkOutHour ?? '11:00'),
             defaultRoomPrice: Value(defaultRoomPrice ?? 0.0),
+            logoUrl: Value(logoUrl), // New v10
             updatedAt: Value(DateTime.now()),
           ),
         );
+  }
+
+  Future<void> updateHotelLogo(String hotelId, String logoUrl) async {
+    await (db.update(db.hotels)..where((t) => t.id.equals(hotelId))).write(
+      HotelsCompanion(
+        logoUrl: Value(logoUrl),
+        updatedAt: Value(DateTime.now()),
+      ),
+    );
   }
 
   /// Fetch hotel profile from DB
@@ -577,6 +588,7 @@ class BoutiFlowService {
       'checkOutHour': hotel.checkOutHour,
       'defaultRoomPrice': hotel.defaultRoomPrice,
       'defaultLanguage': hotel.defaultLanguage,
+      'logoUrl': hotel.logoUrl, // New v10
     };
   }
 
@@ -858,6 +870,7 @@ class BoutiFlowService {
       checkInHour: hotel?.checkInHour ?? '14:00',
       checkOutHour: hotel?.checkOutHour ?? '11:00',
       defaultRoomPrice: hotel?.defaultRoomPrice ?? 0.0,
+      logoUrl: hotel?.logoUrl, // New v10
     );
   }
 
@@ -906,6 +919,7 @@ class BoutiFlowService {
       checkInHour: hotel.checkInHour,
       checkOutHour: hotel.checkOutHour,
       defaultRoomPrice: hotel.defaultRoomPrice,
+      logoUrl: hotel.logoUrl, // New v10
     );
   }
 
@@ -933,6 +947,7 @@ class BoutiFlowService {
       checkInHour: hotel.checkInHour,
       checkOutHour: hotel.checkOutHour,
       defaultRoomPrice: hotel.defaultRoomPrice,
+      logoUrl: hotel.logoUrl, // New v10
     );
   }
 

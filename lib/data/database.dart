@@ -15,6 +15,7 @@ class Hotels extends Table {
       real().withDefault(const Constant(0.0))(); // New v5
   TextColumn get country => text().nullable()();
   TextColumn get city => text().nullable()();
+  TextColumn get logoUrl => text().nullable()(); // New v10
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().nullable()(); // New
 
@@ -195,7 +196,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 9; // Bumped to 9
+  int get schemaVersion => 10; // Bumped to 10 for logoUrl
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -298,6 +299,12 @@ class AppDatabase extends _$AppDatabase {
             // Migration to v9
             try {
               await m.addColumn(bookings, bookings.notes);
+            } catch (_) {}
+          }
+          if (from < 10) {
+            // Migration to v10
+            try {
+              await m.addColumn(hotels, hotels.logoUrl);
             } catch (_) {}
           }
         },

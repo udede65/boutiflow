@@ -4,6 +4,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:typed_data';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../core/localization/app_localizations.dart';
 import '../../core/models/entities.dart';
@@ -29,6 +33,78 @@ class SettingsPage extends ConsumerWidget {
 
     if (user == null) {
       return const SizedBox.shrink();
+    }
+
+    Future<void> saveAndSyncLogo(Uint8List bytes, String fileName) async {
+      // 1. Save locally first
+      final directory = await getApplicationDocumentsDirectory();
+      final localPath = '${directory.path}/hotel_logo_${DateTime.now().millisecondsSinceEpoch}_$fileName';
+      await File(localPath).writeAsBytes(bytes);
+
+      // Write to local DB immediately so UI updates instantly
+      final service = ref.read(boutiFlowServiceProvider);
+      await service.updateHotelLogo(user.hotelId, localPath);
+
+      // Update local state in AppState notifier
+      final updatedUser = user.copyWith(logoUrl: localPath);
+      ref.read(appStateProvider.notifier).updateUserProfile(updatedUser);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profil resmi başarıyla güncellendi')),
+        );
+      }
+
+      // 2. Upload to Supabase Storage in the background
+      try {
+        final syncService = ref.read(cloudSyncServiceProvider);
+        final publicUrl = await syncService.uploadHotelLogo(user.hotelId, bytes, fileName);
+        if (publicUrl != null) {
+          // Update database with remote URL for synchronization
+          await service.updateHotelLogo(user.hotelId, publicUrl);
+          
+          // Update Supabase hotels table with the remote URL
+          await syncService.pushHotel(user.hotelId, user.hotelName, user.currency);
+
+          // Update local state with network URL
+          final finalUser = user.copyWith(logoUrl: publicUrl);
+          ref.read(appStateProvider.notifier).updateUserProfile(finalUser);
+        }
+      } catch (e) {
+        debugPrint('Supabase upload background error: $e');
+      }
+    }
+
+    Future<void> pickAndUploadLogo() async {
+      try {
+        final result = await FilePicker.platform.pickFiles(
+          type: FileType.image,
+          allowMultiple: false,
+        );
+
+        if (result == null || result.files.isEmpty) return;
+
+        final file = result.files.first;
+        final bytes = file.bytes;
+        final name = file.name;
+
+        if (bytes == null) {
+          if (file.path != null) {
+            final fileObj = File(file.path!);
+            final pickedBytes = await fileObj.readAsBytes();
+            await saveAndSyncLogo(pickedBytes, name);
+          }
+        } else {
+          await saveAndSyncLogo(bytes, name);
+        }
+      } catch (e) {
+        debugPrint('Logo picking error: $e');
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Hata: $e')),
+          );
+        }
+      }
     }
 
     final roomsAsync = ref.watch(roomsProvider);
@@ -72,6 +148,7 @@ class SettingsPage extends ConsumerWidget {
                     onLanguage: () => _showLanguagePicker(context, ref, user),
                     onRoomTypes: () => context.push('/settings/room-types'),
                     onSources: () => context.push('/settings/booking-channels'),
+                    onEditLogo: pickAndUploadLogo,
                   ),
 
                   const SizedBox(height: 20),
@@ -946,6 +1023,7 @@ class _BusinessProfileCard extends StatelessWidget {
     required this.onLanguage,
     required this.onRoomTypes,
     required this.onSources,
+    required this.onEditLogo,
   });
 
   final UserProfile user;
@@ -954,6 +1032,37 @@ class _BusinessProfileCard extends StatelessWidget {
   final VoidCallback onLanguage;
   final VoidCallback onRoomTypes;
   final VoidCallback onSources;
+  final VoidCallback onEditLogo;
+
+  static Widget _buildLogo(String? logoUrl) {
+    if (logoUrl == null || logoUrl.isEmpty) {
+      return Image.asset(
+        'assets/app_icon.png',
+        fit: BoxFit.cover,
+      );
+    }
+    if (logoUrl.startsWith('http')) {
+      return Image.network(
+        logoUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => Image.asset(
+          'assets/app_icon.png',
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+    final file = File(logoUrl);
+    if (file.existsSync()) {
+      return Image.file(
+        file,
+        fit: BoxFit.cover,
+      );
+    }
+    return Image.asset(
+      'assets/app_icon.png',
+      fit: BoxFit.cover,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -967,21 +1076,43 @@ class _BusinessProfileCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 70,
-                height: 70,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: NeoBrutalistTheme.black,
-                    width: 3,
+              GestureDetector(
+                onTap: onEditLogo,
+                child: Container(
+                  width: 70,
+                  height: 70,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: NeoBrutalistTheme.black,
+                      width: 3,
+                    ),
+                    boxShadow: NeoBrutalistTheme.brutalistShadowSmall,
                   ),
-                  boxShadow: NeoBrutalistTheme.brutalistShadowSmall,
-                ),
-                child: Image.asset(
-                  'assets/app_icon.png',
-                  fit: BoxFit.cover,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: _buildLogo(user.logoUrl),
+                      ),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: NeoBrutalistTheme.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt_rounded,
+                            size: 12,
+                            color: NeoBrutalistTheme.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(width: 14),
