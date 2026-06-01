@@ -1,11 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'guest_model.freezed.dart';
-part 'guest_model.g.dart';
 
 /// Guest model representing customers from Supabase `guests` table.
 @freezed
 abstract class GuestModel with _$GuestModel {
+  const GuestModel._();
+
   const factory GuestModel({
     required String id,
     @JsonKey(name: 'user_id') required String userId,
@@ -45,5 +46,22 @@ abstract class GuestModel with _$GuestModel {
       createdAt: parseDateTime(json['created_at']),
       updatedAt: parseDateTime(json['updated_at']),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'full_name': fullName,
+      'phone': phone,
+      'national_id': nationalId,
+      'nationality': nationality,
+      'language_code': languageCode,
+      'is_blacklisted': isBlacklisted,
+      'email': email,
+      'notes': notes,
+      'created_at': createdAt?.toUtc().toIso8601String(),
+      'updated_at': updatedAt?.toUtc().toIso8601String(),
+    };
   }
 }

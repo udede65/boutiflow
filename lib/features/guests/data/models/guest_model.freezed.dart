@@ -422,7 +422,7 @@ extension GuestModelPatterns on GuestModel {
 
 /// @nodoc
 
-class _GuestModel implements GuestModel {
+class _GuestModel extends GuestModel {
   const _GuestModel(
       {required this.id,
       @JsonKey(name: 'user_id') required this.userId,
@@ -435,7 +435,8 @@ class _GuestModel implements GuestModel {
       this.email,
       this.notes,
       @JsonKey(name: 'created_at') this.createdAt,
-      @JsonKey(name: 'updated_at') this.updatedAt});
+      @JsonKey(name: 'updated_at') this.updatedAt})
+      : super._();
 
   @override
   final String id;
