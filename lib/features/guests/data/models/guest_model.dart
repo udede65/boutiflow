@@ -21,6 +21,29 @@ abstract class GuestModel with _$GuestModel {
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
   }) = _GuestModel;
 
-  factory GuestModel.fromJson(Map<String, dynamic> json) =>
-      _$GuestModelFromJson(json);
+  factory GuestModel.fromJson(Map<String, dynamic> json) {
+    DateTime? parseDateTime(dynamic value) {
+      if (value == null) return null;
+      if (value is DateTime) return value;
+      if (value is String) return DateTime.tryParse(value);
+      return null;
+    }
+
+    return _GuestModel(
+      id: json['id']?.toString() ?? '',
+      userId: json['user_id']?.toString() ?? '',
+      fullName: json['full_name']?.toString() ?? json['name']?.toString() ?? '',
+      phone: json['phone']?.toString(),
+      nationalId: json['national_id']?.toString(),
+      nationality: json['nationality']?.toString() ?? 'TR',
+      languageCode: json['language_code']?.toString() ?? 'tr',
+      isBlacklisted: json['is_blacklisted'] is bool
+          ? json['is_blacklisted'] as bool
+          : (json['is_blacklisted']?.toString().toLowerCase() == 'true'),
+      email: json['email']?.toString(),
+      notes: json['notes']?.toString(),
+      createdAt: parseDateTime(json['created_at']),
+      updatedAt: parseDateTime(json['updated_at']),
+    );
+  }
 }

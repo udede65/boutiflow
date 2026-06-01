@@ -1,14 +1,17 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart' as fln;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    as fln;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import '../core/models/entities.dart';
+import 'notification_plan.dart';
 
 class NotificationService {
-  final fln.FlutterLocalNotificationsPlugin _notificationsPlugin = fln.FlutterLocalNotificationsPlugin();
+  final fln.FlutterLocalNotificationsPlugin _notificationsPlugin =
+      fln.FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
     tz.initializeTimeZones();
-    
+
     const fln.AndroidInitializationSettings initializationSettingsAndroid =
         fln.AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -19,7 +22,8 @@ class NotificationService {
       requestAlertPermission: false,
     );
 
-    const fln.InitializationSettings initializationSettings = fln.InitializationSettings(
+    const fln.InitializationSettings initializationSettings =
+        fln.InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
@@ -29,15 +33,17 @@ class NotificationService {
 
   Future<void> requestPermissions() async {
     await _notificationsPlugin
-        .resolvePlatformSpecificImplementation<fln.IOSFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            fln.IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
           alert: true,
           badge: true,
           sound: true,
         );
-        
+
     await _notificationsPlugin
-        .resolvePlatformSpecificImplementation<fln.AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            fln.AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
   }
 
@@ -52,9 +58,11 @@ class NotificationService {
       booking.checkIn.year,
       booking.checkIn.month,
       booking.checkIn.day,
-      9, 0, 0,
+      9,
+      0,
+      0,
     );
-    
+
     if (checkInDate.isAfter(DateTime.now())) {
       await _scheduleNotification(
         id: booking.id.hashCode,
@@ -69,7 +77,9 @@ class NotificationService {
       booking.checkOut.year,
       booking.checkOut.month,
       booking.checkOut.day,
-      10, 0, 0,
+      10,
+      0,
+      0,
     );
 
     if (checkOutDate.isAfter(DateTime.now())) {
@@ -85,6 +95,28 @@ class NotificationService {
   Future<void> cancelNotificationsForBooking(String bookingId) async {
     await _notificationsPlugin.cancel(bookingId.hashCode);
     await _notificationsPlugin.cancel(bookingId.hashCode + 1);
+  }
+
+  Future<void> refreshScheduledNotifications(
+    NotificationRefreshPlan plan,
+  ) async {
+    if (plan.cancelExisting) {
+      for (var offset = 0; offset < notificationPlanningWindowDays; offset++) {
+        await _notificationsPlugin
+            .cancel(dailySummaryNotificationBaseId + offset);
+        await _notificationsPlugin
+            .cancel(backupReminderNotificationId + offset);
+      }
+    }
+
+    for (final request in plan.requests) {
+      await _scheduleNotification(
+        id: request.id,
+        title: request.title,
+        body: request.body,
+        scheduledDate: request.scheduledAt,
+      );
+    }
   }
 
   Future<void> _scheduleNotification({

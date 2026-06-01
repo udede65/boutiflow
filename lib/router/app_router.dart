@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../features/auth/login_page.dart';
 import '../features/auth/language_selection_screen.dart';
-import '../features/auth/signup_page.dart';
 import '../features/onboarding/onboarding_wizard.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/splash/splash_screen.dart';
@@ -12,6 +11,7 @@ import '../features/bookings/bookings_page.dart';
 import '../features/bookings/booking_form_screen.dart';
 import '../features/calendar/calendar_page.dart';
 import '../features/dashboard/dashboard_page.dart';
+import '../features/finance/payments_page.dart';
 import '../features/guests/guests_page.dart';
 import '../features/guests/guest_form_screen.dart';
 import '../features/messages/messages_page.dart';
@@ -37,12 +37,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isAuthenticated = appState.isAuthenticated;
       final hasSelectedLanguage = appState.selectedLocale != null;
       final currentPath = state.matchedLocation;
-      
-      // Skip redirect for splash, onboarding, and paywall screens
-      if (currentPath == '/splash' || currentPath == '/onboarding-intro' || currentPath == '/paywall') {
+
+      // Skip redirect for splash and paywall screens.
+      // Onboarding intro still needs the language guard below so first launch
+      // always starts with language selection.
+      if (currentPath == '/splash' || currentPath == '/paywall') {
         return null;
       }
-      
+
       final isLanguageSelection = currentPath == '/language-selection';
       final loggingIn = currentPath == '/login';
       final signingUp = currentPath == '/signup';
@@ -54,14 +56,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         return '/language-selection';
       }
 
-      // 2. If language IS selected, but we are on language selection, go to login
-      if (isLanguageSelection) {
-        return '/login';
-      }
+      // 2. If language IS selected and we are on language selection, let the
+      // screen decide whether the next step is onboarding, login, or dashboard.
+      if (isLanguageSelection) return null;
 
-      // 3. If not authenticated, go to login (unless already there or signing up)
+      // 3. If not authenticated, go to login (unless already there, signing up,
+      // or in the onboarding intro)
       if (!isAuthenticated) {
-        if (loggingIn || signingUp) return null;
+        if (loggingIn || signingUp || currentPath == '/onboarding-intro') {
+          return null;
+        }
         return '/login';
       }
 
@@ -175,6 +179,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/housekeeping',
         builder: (context, state) => const HousekeepingPage(),
+      ),
+      GoRoute(
+        path: '/finance',
+        builder: (context, state) => const PaymentsPage(),
       ),
       GoRoute(
         path: '/messages',

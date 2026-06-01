@@ -2,15 +2,15 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'boutiflow_service.dart';
-import '../core/models/entities.dart' as entities;
 
 class CloudSyncService {
   final BoutiFlowService _localDb;
   static const String _lastSyncKey = 'last_sync_time';
-  
+
   // Supabase credentials
   static const String _supabaseUrl = 'https://poggjnbcysagdumhszex.supabase.co';
-  static const String _supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvZ2dqbmJjeXNhZ2R1bWhzemV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNTQ4MDEsImV4cCI6MjA4ODgzMDgwMX0.qH0Z0PWCIVI7nEyNjbX9XiAT6PVj47rW9_zH5zl8us4';
+  static const String _supabaseAnonKey =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvZ2dqbmJjeXNhZ2R1bWhzemV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyNTQ4MDEsImV4cCI6MjA4ODgzMDgwMX0.qH0Z0PWCIVI7nEyNjbX9XiAT6PVj47rW9_zH5zl8us4';
 
   static bool _initialized = false;
 
@@ -123,11 +123,9 @@ class CloudSyncService {
       }
 
       // 4. Pull remote rooms
-      final remoteRooms = await _client
-          .from('rooms')
-          .select()
-          .eq('hotel_id', hotelId);
-      
+      final remoteRooms =
+          await _client.from('rooms').select().eq('hotel_id', hotelId);
+
       for (final row in remoteRooms) {
         // Check if exists locally, if not create it
         final exists = localRooms.any((r) => r.id == row['id']);
@@ -147,11 +145,9 @@ class CloudSyncService {
       }
 
       // 5. Pull remote guests
-      final remoteGuests = await _client
-          .from('guests')
-          .select()
-          .eq('hotel_id', hotelId);
-      
+      final remoteGuests =
+          await _client.from('guests').select().eq('hotel_id', hotelId);
+
       for (final row in remoteGuests) {
         final exists = localGuests.any((g) => g.id == row['id']);
         if (!exists) {
@@ -191,7 +187,7 @@ class CloudSyncService {
   /// Push hotel data to cloud
   Future<void> pushHotel(String hotelId, String name, String currency) async {
     if (!_initialized) return;
-    
+
     try {
       await _client.from('hotels').upsert({
         'id': hotelId,
@@ -201,6 +197,77 @@ class CloudSyncService {
       });
     } catch (e) {
       debugPrint('Push hotel error: $e');
+    }
+  }
+
+  Future<void> linkCurrentUserToHotel(String hotelId) async {
+    if (!_initialized) return;
+
+    final user = _client.auth.currentUser;
+    if (user == null) return;
+
+    try {
+      await _client.auth.updateUser(
+        UserAttributes(data: {
+          ...(user.userMetadata ?? const <String, dynamic>{}),
+          'boutiflow_hotel_id': hotelId,
+        }),
+      );
+    } catch (e) {
+      debugPrint('Link current user to hotel error: $e');
+    }
+  }
+
+  Future<bool> hasPremiumAccessFromCloud(String hotelId) async {
+    if (!_initialized) return false;
+
+    try {
+      final rows = await _client
+          .from('users')
+          .select('plan')
+          .eq('hotel_id', hotelId)
+          .limit(1);
+      if (rows.isEmpty) return false;
+      final plan = rows.first['plan']?.toString().toLowerCase();
+      return plan == 'premium' || plan == 'pro';
+    } catch (e) {
+      debugPrint('Premium cloud access check error: $e');
+      return false;
+    }
+  }
+
+  Future<RestoreResult> restoreBusinessProfileFromCloud(
+    String targetHotelId,
+  ) async {
+    if (!_initialized) {
+      return RestoreResult(success: false, error: 'Supabase not initialized');
+    }
+
+    try {
+      final rows = await _client
+          .from('hotels')
+          .select()
+          .eq('id', targetHotelId)
+          .limit(1);
+      if (rows.isEmpty) {
+        return RestoreResult(success: false, error: 'Hotel not found');
+      }
+
+      final row = rows.first;
+      await _localDb.upsertHotelProfile(
+        id: targetHotelId,
+        name: row['name']?.toString() ?? 'BoutiFlow',
+        languageCode: row['default_language']?.toString() ?? 'en',
+        currency: row['currency']?.toString(),
+        checkInHour: row['check_in_hour']?.toString(),
+        checkOutHour: row['check_out_hour']?.toString(),
+        defaultRoomPrice: (row['default_room_price'] as num?)?.toDouble(),
+      );
+
+      return RestoreResult(success: true, restoredCount: 1);
+    } catch (e) {
+      debugPrint('Restore business profile error: $e');
+      return RestoreResult(success: false, error: e.toString());
     }
   }
 
@@ -214,11 +281,9 @@ class CloudSyncService {
       int restored = 0;
 
       // 1. Restore rooms
-      final roomsData = await _client
-          .from('rooms')
-          .select()
-          .eq('hotel_id', targetHotelId);
-      
+      final roomsData =
+          await _client.from('rooms').select().eq('hotel_id', targetHotelId);
+
       for (final row in roomsData) {
         try {
           await _localDb.createRoom(
@@ -234,11 +299,9 @@ class CloudSyncService {
       }
 
       // 2. Restore guests
-      final guestsData = await _client
-          .from('guests')
-          .select()
-          .eq('hotel_id', targetHotelId);
-      
+      final guestsData =
+          await _client.from('guests').select().eq('hotel_id', targetHotelId);
+
       for (final row in guestsData) {
         try {
           await _localDb.createGuest(
@@ -257,11 +320,9 @@ class CloudSyncService {
       }
 
       // 3. Restore bookings
-      final bookingsData = await _client
-          .from('bookings')
-          .select()
-          .eq('hotel_id', targetHotelId);
-      
+      final bookingsData =
+          await _client.from('bookings').select().eq('hotel_id', targetHotelId);
+
       for (final row in bookingsData) {
         try {
           await _localDb.createBooking(
@@ -302,7 +363,8 @@ class CloudSyncService {
       }
 
       // Check guests table
-      final guestsData = await _client.from('guests').select('hotel_id').limit(1);
+      final guestsData =
+          await _client.from('guests').select('hotel_id').limit(1);
       if (guestsData.isNotEmpty) {
         return guestsData.first['hotel_id'] as String?;
       }

@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/localization/language_preferences.dart';
 import '../services/providers.dart';
-import '../services/adapty_service.dart';
+import '../services/revenuecat_service.dart';
 
 import '../core/models/entities.dart';
 
@@ -52,12 +53,17 @@ class AppStateNotifier extends Notifier<AppState> {
     final user = await service.loginUser(email, password);
 
     if (user != null) {
+      final languageCode = resolveSessionLocale(
+        state.selectedLocale,
+        user.languageCode,
+      );
       state = state.copyWith(
         isAuthenticated: true,
-        user: user,
-        selectedLocale: user.languageCode,
+        user: user.copyWith(languageCode: languageCode),
+        selectedLocale: languageCode,
       );
-      unawaited(ref.read(adaptyServiceProvider).identify(user.hotelId));
+      unawaited(LanguagePreferences.saveSelectedLanguage(languageCode));
+      unawaited(ref.read(revenuecatServiceProvider).identify(user.hotelId));
       return true;
     }
     return false;
@@ -82,18 +88,23 @@ class AppStateNotifier extends Notifier<AppState> {
   }
 
   /// Restore session from existing user profile (for app restart)
-  void restoreSession(UserProfile user) {
+  void restoreSession(UserProfile user, {String? preferredLanguageCode}) {
+    final languageCode = resolveSessionLocale(
+      preferredLanguageCode ?? state.selectedLocale,
+      user.languageCode,
+    );
     state = state.copyWith(
       isAuthenticated: true,
-      user: user,
-      selectedLocale: user.languageCode,
+      user: user.copyWith(languageCode: languageCode),
+      selectedLocale: languageCode,
     );
-    unawaited(ref.read(adaptyServiceProvider).identify(user.hotelId));
+    unawaited(LanguagePreferences.saveSelectedLanguage(languageCode));
+    unawaited(ref.read(revenuecatServiceProvider).identify(user.hotelId));
   }
 
   void signOut() {
     state = const AppState(isAuthenticated: false);
-    unawaited(ref.read(adaptyServiceProvider).logout());
+    unawaited(ref.read(revenuecatServiceProvider).logout());
   }
 
   void changeLanguage(String languageCode) {
@@ -103,10 +114,12 @@ class AppStateNotifier extends Notifier<AppState> {
       user: user.copyWith(languageCode: languageCode),
       selectedLocale: languageCode,
     );
+    unawaited(LanguagePreferences.saveSelectedLanguage(languageCode));
   }
 
   void setLanguage(String languageCode) {
     state = state.copyWith(selectedLocale: languageCode);
+    unawaited(LanguagePreferences.saveSelectedLanguage(languageCode));
   }
 
   void setThemeMode(ThemeMode mode) {
@@ -139,3 +152,14 @@ class AppStateNotifier extends Notifier<AppState> {
 
 final appStateProvider =
     NotifierProvider<AppStateNotifier, AppState>(AppStateNotifier.new);
+
+String resolveSessionLocale(String? selectedLanguage, String userLanguage) {
+  if (selectedLanguage != null &&
+      LanguagePreferences.isSupportedLanguage(selectedLanguage)) {
+    return selectedLanguage;
+  }
+  if (LanguagePreferences.isSupportedLanguage(userLanguage)) {
+    return userLanguage;
+  }
+  return 'en';
+}

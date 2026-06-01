@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../state/app_state.dart';
 import '../../core/models/entities.dart';
 import '../../core/services/plan_limits.dart';
-import '../../services/adapty_service.dart';
+import '../../services/revenuecat_service.dart';
 
 /// Paywall state holder
 class PaywallState {
@@ -46,8 +46,8 @@ class PaywallNotifier extends Notifier<PaywallState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
-      final adapty = ref.read(adaptyServiceProvider);
-      final products = await adapty.getProducts(locale: locale);
+      final revenuecat = ref.read(revenuecatServiceProvider);
+      final products = await revenuecat.getProducts(locale: locale);
       state = state.copyWith(isLoading: false, products: products);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -58,8 +58,8 @@ class PaywallNotifier extends Notifier<PaywallState> {
     state = state.copyWith(isLoading: true);
 
     try {
-      final adapty = ref.read(adaptyServiceProvider);
-      final result = await adapty.purchase(product);
+      final revenuecat = ref.read(revenuecatServiceProvider);
+      final result = await revenuecat.purchase(product);
 
       if (result.success) {
         ref.read(appStateProvider.notifier).upgradePlan(PlanType.premium);
@@ -89,7 +89,7 @@ class PaywallNotifier extends Notifier<PaywallState> {
     if (product == null) {
       state = state.copyWith(
         isLoading: false,
-        error: AdaptyService.errorNoProducts,
+        error: RevenueCatService.errorNoProducts,
       );
       return false;
     }
@@ -101,8 +101,8 @@ class PaywallNotifier extends Notifier<PaywallState> {
     state = state.copyWith(isLoading: true);
 
     try {
-      final adapty = ref.read(adaptyServiceProvider);
-      final result = await adapty.restorePurchases();
+      final revenuecat = ref.read(revenuecatServiceProvider);
+      final result = await revenuecat.restorePurchases();
 
       if (result.success && result.hasPro) {
         ref.read(appStateProvider.notifier).upgradePlan(PlanType.premium);
@@ -131,8 +131,8 @@ class PaywallNotifier extends Notifier<PaywallState> {
 
   Future<void> checkProStatus() async {
     try {
-      final adapty = ref.read(adaptyServiceProvider);
-      final hasPro = await adapty.hasProAccess();
+      final revenuecat = ref.read(revenuecatServiceProvider);
+      final hasPro = await revenuecat.hasProAccess();
 
       if (hasPro) {
         ref.read(appStateProvider.notifier).upgradePlan(PlanType.premium);

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/localization/language_preferences.dart';
 import '../../state/app_state.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../core/theme/neo_brutalist_theme.dart';
@@ -56,7 +59,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                     label: AppLocalizations.languageLabel('tr'),
                     emoji: '🇹🇷',
                     color: NeoBrutalistTheme.red,
-                    onPressed: () => _selectLanguage(ref, 'tr'),
+                    onPressed: () => _selectLanguage(context, ref, 'tr'),
                   ),
                   const SizedBox(height: 12),
                   _LanguageButton(
@@ -64,7 +67,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                     label: AppLocalizations.languageLabel('en'),
                     emoji: '🇬🇧',
                     color: NeoBrutalistTheme.blue,
-                    onPressed: () => _selectLanguage(ref, 'en'),
+                    onPressed: () => _selectLanguage(context, ref, 'en'),
                   ),
                   const SizedBox(height: 12),
                   _LanguageButton(
@@ -72,7 +75,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                     label: AppLocalizations.languageLabel('de'),
                     emoji: '🇩🇪',
                     color: NeoBrutalistTheme.yellow,
-                    onPressed: () => _selectLanguage(ref, 'de'),
+                    onPressed: () => _selectLanguage(context, ref, 'de'),
                   ),
                   const SizedBox(height: 12),
                   _LanguageButton(
@@ -80,7 +83,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                     label: AppLocalizations.languageLabel('ru'),
                     emoji: '🇷🇺',
                     color: NeoBrutalistTheme.purple,
-                    onPressed: () => _selectLanguage(ref, 'ru'),
+                    onPressed: () => _selectLanguage(context, ref, 'ru'),
                   ),
                   const SizedBox(height: 12),
                   _LanguageButton(
@@ -88,7 +91,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                     label: AppLocalizations.languageLabel('fr'),
                     emoji: '🇫🇷',
                     color: NeoBrutalistTheme.green,
-                    onPressed: () => _selectLanguage(ref, 'fr'),
+                    onPressed: () => _selectLanguage(context, ref, 'fr'),
                   ),
                   const SizedBox(height: 12),
                   _LanguageButton(
@@ -96,7 +99,7 @@ class LanguageSelectionScreen extends ConsumerWidget {
                     label: AppLocalizations.languageLabel('es'),
                     emoji: '🇪🇸',
                     color: NeoBrutalistTheme.orange,
-                    onPressed: () => _selectLanguage(ref, 'es'),
+                    onPressed: () => _selectLanguage(context, ref, 'es'),
                   ),
                 ],
               ),
@@ -107,8 +110,26 @@ class LanguageSelectionScreen extends ConsumerWidget {
     );
   }
 
-  void _selectLanguage(WidgetRef ref, String code) {
+  Future<void> _selectLanguage(
+    BuildContext context,
+    WidgetRef ref,
+    String code,
+  ) async {
     ref.read(appStateProvider.notifier).setLanguage(code);
+    await LanguagePreferences.saveSelectedLanguage(code);
+
+    final appState = ref.read(appStateProvider);
+    if (!context.mounted) return;
+
+    if (appState.isAuthenticated) {
+      context.go('/dashboard');
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeenOnboarding = prefs.getBool('has_seen_onboarding') ?? false;
+    if (!context.mounted) return;
+    context.go(hasSeenOnboarding ? '/login' : '/onboarding-intro');
   }
 }
 

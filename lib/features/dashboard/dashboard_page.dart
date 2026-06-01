@@ -191,11 +191,11 @@ class DashboardPage extends ConsumerWidget {
   Widget _buildQuickActionsGrid(BuildContext context, AppLocalizations l10n) {
     final actions = [
       _QuickAction(
-        icon: Icons.calendar_month_rounded,
-        label: l10n.t('calendar'),
+        icon: Icons.account_balance_wallet_rounded,
+        label: l10n.t('finance'),
         color: NeoBrutalistTheme.orange,
-        route: '/calendar',
-        push: false, // tab route
+        route: '/finance',
+        push: true,
       ),
       _QuickAction(
         icon: Icons.people_rounded,
@@ -224,28 +224,30 @@ class DashboardPage extends ConsumerWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 0.85,
+        crossAxisCount: 2,
+        crossAxisSpacing: 14,
+        mainAxisSpacing: 14,
+        childAspectRatio: 1.2,
       ),
       itemCount: actions.length,
       itemBuilder: (context, index) {
         final action = actions[index];
         return GestureDetector(
-          onTap: () => action.push ? context.push(action.route) : context.go(action.route),
+          onTap: () => action.push
+              ? context.push(action.route)
+              : context.go(action.route),
           child: Container(
             decoration: NeoBrutalistTheme.cardDecoration(action.color),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(action.icon, color: NeoBrutalistTheme.white, size: 28),
-                const SizedBox(height: 8),
+                Icon(action.icon, color: NeoBrutalistTheme.white, size: 36),
+                const SizedBox(height: 12),
                 Text(
                   action.label,
                   style: NeoBrutalistTheme.labelLarge.copyWith(
                     color: NeoBrutalistTheme.white,
-                    fontSize: 11,
+                    fontSize: 16,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 2,

@@ -1,0 +1,181 @@
+Analyzing boutiflow...                                          
+
+   info • Unnecessary 'this.' qualifier • lib/core/models/entities.dart:48:11 • unnecessary_this
+warning • The value of the field '_success' isn't used • lib/core/theme/app_theme.dart:22:16 • unused_field
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:138:38 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:144:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:144:75 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:167:57 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:167:89 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:175:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:178:63 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:178:95 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:182:63 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:182:95 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:195:43 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:195:71 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:196:34 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:224:38 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:224:71 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:237:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:243:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/theme/app_theme.dart:254:83 • deprecated_member_use
+   info • The import of 'package:flutter/foundation.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart' • lib/core/widgets/banner_ad_widget.dart:1:8 • unnecessary_import
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/widgets/glass_container.dart:43:48 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/widgets/glass_container.dart:46:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/widgets/glass_container.dart:63:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/widgets/glass_container.dart:67:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/core/widgets/premium_gate.dart:49:39 • deprecated_member_use
+  error • The named parameter 'status' is required, but there's no corresponding argument • lib/data/mock_data.dart:4:9 • missing_required_argument
+  error • The named parameter 'status' is required, but there's no corresponding argument • lib/data/mock_data.dart:5:9 • missing_required_argument
+  error • The named parameter 'status' is required, but there's no corresponding argument • lib/data/mock_data.dart:6:9 • missing_required_argument
+  error • There's no constant named 'deposit' in 'PaymentStatus' • lib/data/mock_data.dart:46:34 • undefined_enum_constant
+  error • The named parameter 'price' isn't defined • lib/data/mock_data.dart:47:5 • undefined_named_parameter
+  error • The named parameter 'price' isn't defined • lib/data/mock_data.dart:57:5 • undefined_named_parameter
+  error • The named parameter 'price' isn't defined • lib/data/mock_data.dart:67:5 • undefined_named_parameter
+  error • The named parameter 'language' is required, but there's no corresponding argument • lib/data/mock_data.dart:72:3 • missing_required_argument
+  error • The named parameter 'languageCode' isn't defined • lib/data/mock_data.dart:75:5 • undefined_named_parameter
+  error • The named parameter 'language' is required, but there's no corresponding argument • lib/data/mock_data.dart:80:3 • missing_required_argument
+  error • The named parameter 'languageCode' isn't defined • lib/data/mock_data.dart:83:5 • undefined_named_parameter
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/auth/login_page.dart:71:50 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/auth/login_page.dart:118:61 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/auth/login_page.dart:128:61 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/auth/signup_page.dart:35:45 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/auth/signup_page.dart:68:56 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/auth/signup_page.dart:112:51 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/auth/signup_page.dart:252:31 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/features/bookings/booking_form_screen.dart:260:30 • use_build_context_synchronously
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/bookings/booking_form_screen.dart:492:31 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/bookings/booking_form_screen.dart:552:37 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/bookings/booking_form_screen.dart:687:25 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/bookings/booking_form_screen.dart:724:31 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/features/bookings/booking_form_screen.dart:1071:35 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/bookings/bookings_page.dart:78:54 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/bookings/bookings_page.dart:176:54 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/bookings/bookings_page.dart:210:57 • deprecated_member_use
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/booking_model.dart:25:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/booking_model.dart:26:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/booking_model.dart:27:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/booking_model.dart:28:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/booking_model.dart:29:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/booking_model.dart:30:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/booking_model.dart:33:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/room_model.dart:29:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/room_model.dart:32:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/room_model.dart:33:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/room_model.dart:34:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/room_model.dart:35:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/bookings/data/models/room_model.dart:36:6 • invalid_annotation_target
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/calendar/calendar_grid.dart:102:49 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/calendar/calendar_grid.dart:105:51 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/calendar/calendar_grid.dart:106:47 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/calendar/calendar_grid.dart:150:49 • deprecated_member_use
+   info • Unnecessary use of 'toList' in a spread • lib/features/calendar/calendar_grid.dart:245:28 • unnecessary_to_list_in_spreads
+   info • 'onWillAccept' is deprecated and shouldn't be used. Use onWillAcceptWithDetails instead. This callback is similar to onWillAcceptWithDetails but does not provide drag details. This feature was deprecated after v3.14.0-0.2.pre • lib/features/calendar/calendar_grid.dart:282:35 • deprecated_member_use
+   info • 'onAccept' is deprecated and shouldn't be used. Use onAcceptWithDetails instead. This callback is similar to onAcceptWithDetails but does not provide drag details. This feature was deprecated after v3.14.0-0.2.pre • lib/features/calendar/calendar_grid.dart:285:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/calendar/calendar_grid.dart:314:57 • deprecated_member_use
+   info • Unnecessary use of 'toList' in a spread • lib/features/calendar/calendar_grid.dart:335:28 • unnecessary_to_list_in_spreads
+warning • This default clause is covered by the previous cases • lib/features/calendar/calendar_grid.dart:363:7 • unreachable_switch_default
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/calendar/calendar_grid.dart:374:24 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/calendar/calendar_grid.dart:384:22 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/calendar/calendar_grid.dart:389:24 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/features/calendar/calendar_page.dart:258:50 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/features/calendar/calendar_page.dart:266:50 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/features/calendar/calendar_page.dart:341:64 • use_build_context_synchronously
+   info • Statements in an if should be enclosed in a block • lib/features/calendar/calendar_page.dart:492:29 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/features/calendar/calendar_page.dart:494:29 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/features/calendar/calendar_page.dart:495:61 • curly_braces_in_flow_control_structures
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/finance/data/models/expense_model.dart:11:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/finance/data/models/expense_model.dart:17:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/finance/data/models/expense_model.dart:18:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/finance/data/models/expense_model.dart:19:6 • invalid_annotation_target
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/finance/payments_page.dart:69:49 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/finance/payments_page.dart:210:22 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/finance/payments_page.dart:212:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/finance/payments_page.dart:243:28 • deprecated_member_use
+   info • Statements in an if should be enclosed in a block • lib/features/finance/payments_page.dart:414:11 • curly_braces_in_flow_control_structures
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/finance/payments_page.dart:425:34 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/finance/payments_page.dart:426:36 • deprecated_member_use
+   info • Statements in an if should be enclosed in a block • lib/features/finance/payments_page.dart:488:11 • curly_braces_in_flow_control_structures
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/finance/payments_page.dart:498:45 • deprecated_member_use
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/guests/data/models/guest_model.dart:11:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/guests/data/models/guest_model.dart:12:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/guests/data/models/guest_model.dart:14:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/guests/data/models/guest_model.dart:16:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/guests/data/models/guest_model.dart:17:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/guests/data/models/guest_model.dart:20:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/guests/data/models/guest_model.dart:21:6 • invalid_annotation_target
+warning • The value of the field '_formKey' isn't used • lib/features/guests/guest_form_screen.dart:28:9 • unused_field
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/guests/guests_page.dart:375:19 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/guests/guests_page.dart:511:19 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/housekeeping/housekeeping_page.dart:107:56 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/messages/message_generation_screen.dart:149:17 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/messages/template_form_screen.dart:202:17 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/onboarding/onboarding_screen.dart:152:50 • deprecated_member_use
+   info • The private field _defaultRoomPrice could be 'final' • lib/features/onboarding/onboarding_wizard.dart:27:10 • prefer_final_fields
+   info • The private field _roomCount could be 'final' • lib/features/onboarding/onboarding_wizard.dart:28:7 • prefer_final_fields
+   info • Don't use 'BuildContext's across async gaps • lib/features/onboarding/onboarding_wizard.dart:164:28 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/onboarding/onboarding_wizard.dart:194:54 • deprecated_member_use
+warning • The declaration '_buildLanguageStep' isn't referenced • lib/features/onboarding/onboarding_wizard.dart:222:10 • unused_element
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/onboarding/onboarding_wizard.dart:363:21 • deprecated_member_use
+warning • The declaration '_buildAccountStep' isn't referenced • lib/features/onboarding/onboarding_wizard.dart:501:10 • unused_element
+   info • Unnecessary braces in a string interpolation • lib/features/reports/analytics_page.dart:185:27 • unnecessary_brace_in_string_interps
+   info • Statements in an if should be enclosed in a block • lib/features/reports/analytics_page.dart:286:19 • curly_braces_in_flow_control_structures
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/reports/analytics_page.dart:311:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/reports/occupancy_heatmap.dart:39:28 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/reports/widgets/occupancy_chart.dart:45:44 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/reports/widgets/occupancy_chart.dart:105:43 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/settings/booking_channels_page.dart:159:67 • deprecated_member_use
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/settings/data/models/profile_model.dart:11:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/settings/data/models/profile_model.dart:12:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/settings/data/models/profile_model.dart:13:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/settings/data/models/profile_model.dart:14:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/settings/data/models/profile_model.dart:15:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/settings/data/models/profile_model.dart:16:6 • invalid_annotation_target
+warning • The annotation 'JsonKey.new' can only be used on fields or getters • lib/features/settings/data/models/profile_model.dart:17:6 • invalid_annotation_target
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/settings/hotel_info_page.dart:204:29 • deprecated_member_use
+   info • Statements in an if should be enclosed in a block • lib/features/settings/hotel_info_page.dart:216:33 • curly_braces_in_flow_control_structures
+   info • Don't use 'BuildContext's across async gaps • lib/features/settings/room_types_page.dart:269:40 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/settings/settings_page.dart:39:49 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/settings/settings_page.dart:111:27 • deprecated_member_use
+   info • 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre • lib/features/settings/settings_page.dart:383:25 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/features/settings/settings_page.dart:896:23 • deprecated_member_use
+warning • Unused import: '../features/auth/signup_page.dart' • lib/router/app_router.dart:7:8 • unused_import
+   info • 'Share' is deprecated and shouldn't be used. Use SharePlus instead • lib/services/backup_service.dart:61:11 • deprecated_member_use
+   info • 'shareXFiles' is deprecated and shouldn't be used. Use SharePlus.instance.share() instead • lib/services/backup_service.dart:61:17 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:109:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:132:12 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/backup_service.dart:153:12 • avoid_print
+warning • Unused import: '../core/models/entities.dart' • lib/services/cloud_sync_service.dart:5:8 • unused_import
+warning • Unnecessary type check; the result is always 'true' • lib/services/ical_import_service.dart:59:11 • unnecessary_type_check
+   info • 'Share' is deprecated and shouldn't be used. Use SharePlus instead • lib/services/ical_service.dart:17:11 • deprecated_member_use
+   info • 'shareXFiles' is deprecated and shouldn't be used. Use SharePlus.instance.share() instead • lib/services/ical_service.dart:17:17 • deprecated_member_use
+   info • The imported package 'timezone' isn't a dependency of the importing package • lib/services/notification_service.dart:2:8 • depend_on_referenced_packages
+   info • The imported package 'timezone' isn't a dependency of the importing package • lib/services/notification_service.dart:3:8 • depend_on_referenced_packages
+warning • Unused import: 'dart:typed_data' • lib/services/pdf_service.dart:1:8 • unused_import
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:28:53 • dead_null_aware_expression
+   info • 'Table.fromTextArray' is deprecated and shouldn't be used. Use TableHelper.fromTextArray() instead • lib/services/pdf_service.dart:55:15 • deprecated_member_use
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:60:53 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:60:88 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:76:62 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:107:65 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:112:56 • dead_null_aware_expression
+   info • 'Table.fromTextArray' is deprecated and shouldn't be used. Use TableHelper.fromTextArray() instead • lib/services/pdf_service.dart:114:15 • deprecated_member_use
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:119:48 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:119:77 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:120:49 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:121:50 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:122:46 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:123:48 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:124:52 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:128:49 • dead_null_aware_expression
+warning • The left operand can't be null, so the right operand is never executed • lib/services/pdf_service.dart:133:64 • dead_null_aware_expression
+   info • 'purchasePackage' is deprecated and shouldn't be used. Use purchase(PurchaseParams) • lib/services/revenuecat_service.dart:128:46 • deprecated_member_use
+   info • Don't invoke 'print' in production code • test/services/ical_debug.dart:19:3 • avoid_print
+warning • Unnecessary type check; the result is always 'true' • test/services/ical_debug.dart:20:7 • unnecessary_type_check
+   info • Don't invoke 'print' in production code • test/services/ical_debug.dart:22:7 • avoid_print
+warning • Unnecessary type check; the result is always 'true' • test/services/ical_debug.dart:23:11 • unnecessary_type_check
+   info • Don't invoke 'print' in production code • test/services/ical_debug.dart:24:9 • avoid_print
+   info • Don't invoke 'print' in production code • test/services/ical_debug.dart:25:9 • avoid_print
+warning • Unused import: 'dart:convert' • test/services/ical_import_test.dart:1:8 • unused_import
+

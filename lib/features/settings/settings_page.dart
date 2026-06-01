@@ -14,6 +14,7 @@ import '../../providers/booking_providers.dart';
 import '../../core/services/plan_limits.dart';
 import '../../core/widgets/upgrade_prompt.dart';
 import '../../core/theme/neo_brutalist_theme.dart';
+import '../../services/notification_preferences.dart';
 import 'account_deletion_request.dart';
 import 'legal_page_links.dart';
 
@@ -36,12 +37,8 @@ class SettingsPage extends ConsumerWidget {
     const textPrimary = NeoBrutalistTheme.black;
     const textSecondary = NeoBrutalistTheme.grey;
     const textMuted = NeoBrutalistTheme.grey;
-    const inputBg = NeoBrutalistTheme.white;
-    const inputBorder = NeoBrutalistTheme.black;
     final borderColor = NeoBrutalistTheme.black.withValues(alpha: 0.1);
     const primary = NeoBrutalistTheme.blue;
-    final supportedLanguageNames =
-        supportedLanguageCodes.map(AppLocalizations.languageLabel).join(' • ');
 
     return Scaffold(
       backgroundColor: NeoBrutalistTheme.cream,
@@ -68,205 +65,16 @@ class SettingsPage extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(
                     16, 0, 16, 100), // Add bottom padding for nav bar
                 children: [
-                  // Hotel Profile Section
-                  _SectionHeader(title: l10n.t('hotelProfile')),
-                  NeoCard(
-                    color: NeoBrutalistTheme.white,
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          initialValue: user.hotelName,
-                          style: GoogleFonts.inter(color: textPrimary),
-                          decoration: InputDecoration(
-                            labelText: l10n.t('hotelName'),
-                            labelStyle: TextStyle(color: textSecondary),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: inputBorder),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: primary),
-                            ),
-                            filled: true,
-                            fillColor: inputBg,
-                          ),
-                          onFieldSubmitted: (value) {
-                            if (value.isNotEmpty) {
-                              ref
-                                  .read(boutiFlowServiceProvider)
-                                  .updateHotelProfile(
-                                    name: value,
-                                    languageCode: user.languageCode,
-                                  );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(l10n.t('saved'))),
-                              );
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        DropdownButtonFormField<String>(
-                          initialValue: user.currency,
-                          style: GoogleFonts.inter(color: textPrimary),
-                          decoration: InputDecoration(
-                            labelText: l10n.t('currency'),
-                            labelStyle: TextStyle(color: textSecondary),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: inputBorder),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: primary),
-                            ),
-                            filled: true,
-                            fillColor: inputBg,
-                          ),
-                          items:
-                              ['EUR', 'USD', 'TRY', 'GBP', 'RUB'].map((code) {
-                            return DropdownMenuItem(
-                              value: code,
-                              child: Text(code),
-                            );
-                          }).toList(),
-                          onChanged: (code) {
-                            if (code != null) {
-                              ref
-                                  .read(boutiFlowServiceProvider)
-                                  .updateHotelProfile(
-                                    name: user.hotelName,
-                                    languageCode: user.languageCode,
-                                    currency: code,
-                                  );
-                              ref
-                                  .read(appStateProvider.notifier)
-                                  .updateUserProfile(
-                                    user.copyWith(currency: code),
-                                  );
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        GestureDetector(
-                          onTap: () => _showLanguagePicker(context, ref, user),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 12),
-                            decoration: BoxDecoration(
-                              color: inputBg,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: inputBorder),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.language_rounded,
-                                    color: textSecondary),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        l10n.t('language'),
-                                        style: GoogleFonts.inter(
-                                            color: textSecondary, fontSize: 12),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        AppLocalizations.languageLabel(
-                                            user.languageCode),
-                                        style: GoogleFonts.inter(
-                                            color: textPrimary,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const Icon(Icons.expand_more_rounded,
-                                    color: textSecondary),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: NeoBrutalistTheme.cream,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: inputBorder),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                l10n.t('supportedLanguages'),
-                                style: GoogleFonts.inter(
-                                  color: textPrimary,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                supportedLanguageNames,
-                                style: GoogleFonts.inter(color: textMuted),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.edit_note_rounded,
-                              color: textSecondary),
-                          title: Text(l10n.t('editHotelInfo'),
-                              style: GoogleFonts.inter(color: textPrimary)),
-                          subtitle: Text(l10n.t('editHotelInfoSubtitle'),
-                              style: GoogleFonts.inter(color: textMuted)),
-                          trailing: Icon(Icons.chevron_right_rounded,
-                              color: textMuted),
-                          onTap: () => context.push('/settings/hotel-info'),
-                        ),
-                        const SizedBox(height: 16),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.category_rounded,
-                              color: textSecondary),
-                          title: Text(l10n.t('roomTypes'),
-                              style: GoogleFonts.inter(color: textPrimary)),
-                          subtitle: Text(l10n.t('roomTypesSubtitle'),
-                              style: GoogleFonts.inter(color: textMuted)),
-                          trailing: Icon(Icons.chevron_right_rounded,
-                              color: textMuted),
-                          onTap: () => context.push('/settings/room-types'),
-                        ),
-                        const SizedBox(height: 16),
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading:
-                              Icon(Icons.source_rounded, color: textSecondary),
-                          title: Text(l10n.t('bookingSources'),
-                              style: GoogleFonts.inter(color: textPrimary)),
-                          subtitle: Text(l10n.t('activeSources'),
-                              style: GoogleFonts.inter(color: textMuted)),
-                          trailing: Icon(Icons.chevron_right_rounded,
-                              color: textMuted),
-                          onTap: () =>
-                              context.push('/settings/booking-channels'),
-                        ),
-                      ],
-                    ),
+                  _BusinessProfileCard(
+                    user: user,
+                    l10n: l10n,
+                    onEditProfile: () => context.push('/settings/hotel-info'),
+                    onLanguage: () => _showLanguagePicker(context, ref, user),
+                    onRoomTypes: () => context.push('/settings/room-types'),
+                    onSources: () => context.push('/settings/booking-channels'),
                   ),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                   // Room Management Section
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -344,24 +152,12 @@ class SettingsPage extends ConsumerWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
 
                   // Preferences Section
                   _SettingsSection(
                     title: l10n.t('preferences'),
                     children: [
-                      ListTile(
-                        leading: Icon(Icons.brightness_6_rounded,
-                            color: textSecondary),
-                        title: Text(l10n.t('theme'),
-                            style: GoogleFonts.inter(color: textPrimary)),
-                        subtitle: Text(_getThemeLabel(appState.themeMode, l10n),
-                            style: GoogleFonts.inter(color: textMuted)),
-                        trailing:
-                            Icon(Icons.chevron_right_rounded, color: textMuted),
-                        onTap: () =>
-                            _showThemeDialog(context, ref, appState.themeMode),
-                      ),
                       ListTile(
                         leading:
                             Icon(Icons.language_rounded, color: textSecondary),
@@ -384,9 +180,13 @@ class SettingsPage extends ConsumerWidget {
                             style: GoogleFonts.inter(color: textMuted)),
                         value: appState.backupReminders,
                         activeThumbColor: primary,
-                        onChanged: (val) => ref
-                            .read(appStateProvider.notifier)
-                            .toggleBackupReminders(val),
+                        onChanged: (val) async {
+                          ref
+                              .read(appStateProvider.notifier)
+                              .toggleBackupReminders(val);
+                          await NotificationPreferences
+                              .setBackupRemindersEnabled(val);
+                        },
                       ),
                       ListTile(
                         leading:
@@ -400,6 +200,7 @@ class SettingsPage extends ConsumerWidget {
                           if (hotelId.isEmpty) return;
                           final backupService = ref.read(backupServiceProvider);
                           await backupService.exportData(hotelId);
+                          await NotificationPreferences.markBackupCompleted();
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(l10n.t('dataExported'))),
@@ -471,6 +272,10 @@ class SettingsPage extends ConsumerWidget {
                                       final result = await ref
                                           .read(cloudSyncServiceProvider)
                                           .syncNow(hotelId);
+                                      if (result.success) {
+                                        await NotificationPreferences
+                                            .markBackupCompleted();
+                                      }
 
                                       if (context.mounted) {
                                         if (result.success) {
@@ -597,7 +402,7 @@ class SettingsPage extends ConsumerWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
 
                   // Upgrade Section
                   _SectionHeader(title: l10n.t('upgrade')),
@@ -629,7 +434,7 @@ class SettingsPage extends ConsumerWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
 
                   // Legal & Support Section
                   _SettingsSection(
@@ -683,7 +488,7 @@ class SettingsPage extends ConsumerWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
                   OutlinedButton.icon(
                     onPressed: () {
                       ref.read(appStateProvider.notifier).signOut();
@@ -890,7 +695,7 @@ class SettingsPage extends ConsumerWidget {
     UserProfile user,
     String code,
   ) async {
-    await ref.read(appStateProvider.notifier).changeLanguage(code);
+    ref.read(appStateProvider.notifier).changeLanguage(code);
     await ref.read(boutiFlowServiceProvider).updateHotelProfile(
           name: user.hotelName,
           languageCode: code,
@@ -1131,95 +936,221 @@ class SettingsPage extends ConsumerWidget {
       ),
     );
   }
+}
 
-  String _getThemeLabel(ThemeMode mode, AppLocalizations l10n) {
-    switch (mode) {
-      case ThemeMode.system:
-        return l10n.t('systemDefault');
-      case ThemeMode.light:
-        return l10n.t('lightMode');
-      case ThemeMode.dark:
-        return l10n.t('darkMode');
-    }
-  }
+class _BusinessProfileCard extends StatelessWidget {
+  const _BusinessProfileCard({
+    required this.user,
+    required this.l10n,
+    required this.onEditProfile,
+    required this.onLanguage,
+    required this.onRoomTypes,
+    required this.onSources,
+  });
 
-  void _showThemeDialog(
-      BuildContext context, WidgetRef ref, ThemeMode currentMode) {
-    final l10n = context.l10n;
-    showDialog(
-      context: context,
-      builder: (context) => SimpleDialog(
-        backgroundColor: const Color(0xFF2D3748),
-        title: Text(l10n.t('selectTheme'),
-            style: GoogleFonts.inter(
-                fontWeight: FontWeight.bold, color: Colors.white)),
+  final UserProfile user;
+  final AppLocalizations l10n;
+  final VoidCallback onEditProfile;
+  final VoidCallback onLanguage;
+  final VoidCallback onRoomTypes;
+  final VoidCallback onSources;
+
+  @override
+  Widget build(BuildContext context) {
+    final isPremium = PlanLimits.isPremium(user.plan);
+
+    return NeoCard(
+      color: NeoBrutalistTheme.white,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SimpleDialogOption(
-            onPressed: () {
-              ref
-                  .read(appStateProvider.notifier)
-                  .setThemeMode(ThemeMode.system);
-              Navigator.pop(context);
-            },
-            child: Row(
-              children: [
-                Icon(Icons.brightness_auto,
-                    color: currentMode == ThemeMode.system
-                        ? const Color(0xFFFFC107)
-                        : Colors.white54),
-                const SizedBox(width: 12),
-                Text(l10n.t('systemDefault'),
-                    style: GoogleFonts.inter(
-                        fontWeight: currentMode == ThemeMode.system
-                            ? FontWeight.bold
-                            : null,
-                        color: Colors.white)),
-              ],
-            ),
+          Row(
+            children: [
+              Container(
+                width: 70,
+                height: 70,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: NeoBrutalistTheme.black,
+                    width: 3,
+                  ),
+                  boxShadow: NeoBrutalistTheme.brutalistShadowSmall,
+                ),
+                child: Image.asset(
+                  'assets/app_icon.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.upper('hotelProfile'),
+                      style: NeoBrutalistTheme.labelLarge.copyWith(
+                        color: NeoBrutalistTheme.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      user.hotelName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: NeoBrutalistTheme.headlineMedium,
+                    ),
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _ProfilePill(
+                          icon: Icons.workspace_premium_rounded,
+                          label: isPremium
+                              ? l10n.t('premium')
+                              : l10n.t('freePlan'),
+                          color: isPremium
+                              ? NeoBrutalistTheme.yellow
+                              : NeoBrutalistTheme.cream,
+                        ),
+                        _ProfilePill(
+                          icon: Icons.payments_rounded,
+                          label:
+                              '${user.currency} ${getCurrencySymbol(user.currency)}',
+                          color: NeoBrutalistTheme.cream,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                onPressed: onEditProfile,
+                icon: const Icon(Icons.edit_rounded),
+                style: IconButton.styleFrom(
+                  backgroundColor: NeoBrutalistTheme.blue,
+                  foregroundColor: NeoBrutalistTheme.white,
+                  side: const BorderSide(
+                    color: NeoBrutalistTheme.black,
+                    width: 2,
+                  ),
+                ),
+              ),
+            ],
           ),
-          SimpleDialogOption(
-            onPressed: () {
-              ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.light);
-              Navigator.pop(context);
-            },
-            child: Row(
-              children: [
-                Icon(Icons.light_mode,
-                    color: currentMode == ThemeMode.light
-                        ? const Color(0xFFFFC107)
-                        : Colors.white54),
-                const SizedBox(width: 12),
-                Text(l10n.t('lightMode'),
-                    style: GoogleFonts.inter(
-                        fontWeight: currentMode == ThemeMode.light
-                            ? FontWeight.bold
-                            : null,
-                        color: Colors.white)),
-              ],
-            ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _ProfileAction(
+                  icon: Icons.language_rounded,
+                  label: AppLocalizations.languageLabel(user.languageCode),
+                  onTap: onLanguage,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _ProfileAction(
+                  icon: Icons.category_rounded,
+                  label: l10n.t('roomTypes'),
+                  onTap: onRoomTypes,
+                ),
+              ),
+            ],
           ),
-          SimpleDialogOption(
-            onPressed: () {
-              ref.read(appStateProvider.notifier).setThemeMode(ThemeMode.dark);
-              Navigator.pop(context);
-            },
-            child: Row(
-              children: [
-                Icon(Icons.dark_mode,
-                    color: currentMode == ThemeMode.dark
-                        ? const Color(0xFFFFC107)
-                        : Colors.white54),
-                const SizedBox(width: 12),
-                Text(l10n.t('darkMode'),
-                    style: GoogleFonts.inter(
-                        fontWeight: currentMode == ThemeMode.dark
-                            ? FontWeight.bold
-                            : null,
-                        color: Colors.white)),
-              ],
-            ),
+          const SizedBox(height: 10),
+          _ProfileAction(
+            icon: Icons.source_rounded,
+            label: l10n.t('bookingSources'),
+            onTap: onSources,
+            wide: true,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ProfilePill extends StatelessWidget {
+  const _ProfilePill({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: NeoBrutalistTheme.black, width: 2),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: NeoBrutalistTheme.black),
+          const SizedBox(width: 5),
+          Text(label, style: NeoBrutalistTheme.labelLarge),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileAction extends StatelessWidget {
+  const _ProfileAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.wide = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool wide;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: NeoBrutalistTheme.cream,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          width: wide ? double.infinity : null,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: NeoBrutalistTheme.black, width: 2),
+          ),
+          child: Row(
+            mainAxisSize: wide ? MainAxisSize.max : MainAxisSize.min,
+            children: [
+              Icon(icon, size: 20, color: NeoBrutalistTheme.black),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: NeoBrutalistTheme.labelLarge,
+                ),
+              ),
+              const Icon(Icons.chevron_right_rounded, size: 20),
+            ],
+          ),
+        ),
       ),
     );
   }

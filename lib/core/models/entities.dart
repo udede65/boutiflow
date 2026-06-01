@@ -1,4 +1,5 @@
 enum BookingStatus { reserved, checkedIn, checkedOut, cancelled }
+
 enum PaymentStatus { unpaid, partial, paid, refunded }
 
 enum RoomStatus { clean, dirty, maintenance }
@@ -45,7 +46,7 @@ class Room {
     RoomType? type,
   }) {
     return Room(
-      id: this.id, // Changed from `id: id,` to `id: this.id,` to maintain syntactic correctness as `id` is not a parameter.
+      id: id,
       name: name ?? this.name,
       capacity: capacity ?? this.capacity,
       status: status ?? this.status,
@@ -387,15 +388,23 @@ class Expense {
     required this.date,
     required this.category,
   });
+
+  bool get isIncome => category.toLowerCase().startsWith('income:');
 }
 
 String getCurrencySymbol(String currencyCode) {
   switch (currencyCode) {
-    case 'EUR': return '€';
-    case 'USD': return '\$';
-    case 'TRY': return '₺';
-    case 'GBP': return '£';
-    case 'RUB': return '₽';
-    default: return currencyCode;
+    case 'EUR':
+      return '€';
+    case 'USD':
+      return '\$';
+    case 'TRY':
+      return '₺';
+    case 'GBP':
+      return '£';
+    case 'RUB':
+      return '₽';
+    default:
+      return currencyCode;
   }
 }

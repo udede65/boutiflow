@@ -6,6 +6,7 @@ import 'notification_service.dart';
 
 class BoutiFlowService {
   final AppDatabase db;
+  static const _incomeCategoryPrefix = 'income:';
 
   BoutiFlowService(this.db);
 
@@ -541,6 +542,29 @@ class BoutiFlowService {
     }
   }
 
+  Future<void> upsertHotelProfile({
+    required String id,
+    required String name,
+    required String languageCode,
+    String? currency,
+    String? checkInHour,
+    String? checkOutHour,
+    double? defaultRoomPrice,
+  }) async {
+    await db.into(db.hotels).insertOnConflictUpdate(
+          HotelsCompanion.insert(
+            id: id,
+            name: name,
+            defaultLanguage: Value(languageCode),
+            currency: Value(currency ?? 'EUR'),
+            checkInHour: Value(checkInHour ?? '14:00'),
+            checkOutHour: Value(checkOutHour ?? '11:00'),
+            defaultRoomPrice: Value(defaultRoomPrice ?? 0.0),
+            updatedAt: Value(DateTime.now()),
+          ),
+        );
+  }
+
   /// Fetch hotel profile from DB
   Future<Map<String, dynamic>?> getHotel() async {
     final hotel = await (db.select(db.hotels)..limit(1)).getSingleOrNull();
@@ -717,17 +741,29 @@ class BoutiFlowService {
 
   // Expense Methods
   Future<List<entities.Expense>> fetchExpenses({String? hotelId}) async {
+    final entries = await fetchFinanceTransactions(hotelId: hotelId);
+    return entries.where((entry) => !entry.isIncome).toList();
+  }
+
+  Future<List<entities.Expense>> fetchManualIncome({String? hotelId}) async {
+    final entries = await fetchFinanceTransactions(hotelId: hotelId);
+    return entries.where((entry) => entry.isIncome).toList();
+  }
+
+  Future<List<entities.Expense>> fetchFinanceTransactions({
+    String? hotelId,
+  }) async {
     final resolvedHotelId = await _resolveHotelId(hotelId);
     if (resolvedHotelId.isEmpty) return const [];
 
-    final expenses = await (db.select(db.expenses)
+    final entries = await (db.select(db.expenses)
           ..where((t) => t.hotelId.equals(resolvedHotelId))
           ..orderBy([
             (t) => OrderingTerm(expression: t.date, mode: OrderingMode.desc)
           ]))
         .get();
 
-    return expenses
+    return entries
         .map((e) => entities.Expense(
               id: e.id,
               description: e.description,
@@ -736,6 +772,25 @@ class BoutiFlowService {
               category: e.category,
             ))
         .toList();
+  }
+
+  Future<void> createIncome({
+    required String description,
+    required double amount,
+    required DateTime date,
+    required String category,
+    String? hotelId,
+  }) {
+    final normalizedCategory = category.trim().toLowerCase();
+    return createExpense(
+      hotelId: hotelId,
+      description: description,
+      amount: amount,
+      date: date,
+      category: normalizedCategory.startsWith(_incomeCategoryPrefix)
+          ? normalizedCategory
+          : '$_incomeCategoryPrefix$normalizedCategory',
+    );
   }
 
   Future<void> createExpense({
@@ -803,6 +858,54 @@ class BoutiFlowService {
       checkInHour: hotel?.checkInHour ?? '14:00',
       checkOutHour: hotel?.checkOutHour ?? '11:00',
       defaultRoomPrice: hotel?.defaultRoomPrice ?? 0.0,
+    );
+  }
+
+  Future<entities.UserProfile?> restoreOrCreateSocialUser({
+    required String? email,
+    required String languageCode,
+  }) async {
+    final hotel = await db.select(db.hotels).getSingleOrNull();
+    if (hotel == null) return null;
+
+    final resolvedEmail = (email != null && email.trim().isNotEmpty)
+        ? email.trim()
+        : 'social_${hotel.id}@boutiflow.local';
+
+    var user = await (db.select(db.users)
+          ..where((u) =>
+              u.email.equals(resolvedEmail) | u.hotelId.equals(hotel.id)))
+        .getSingleOrNull();
+
+    if (user == null) {
+      await db.into(db.users).insert(
+            UsersCompanion.insert(
+              id: _uuid(),
+              email: resolvedEmail,
+              passwordHash: 'social_login',
+              hotelId: Value(hotel.id),
+              role: const Value('owner'),
+              plan: const Value('free'),
+            ),
+          );
+      user = await (db.select(db.users)
+            ..where((u) => u.email.equals(resolvedEmail)))
+          .getSingle();
+    }
+
+    return entities.UserProfile(
+      hotelId: hotel.id,
+      email: user.email,
+      displayName: user.email.split('@').first,
+      hotelName: hotel.name,
+      languageCode: hotel.defaultLanguage.isNotEmpty
+          ? hotel.defaultLanguage
+          : languageCode,
+      plan: _mapPlan(user.plan),
+      currency: hotel.currency,
+      checkInHour: hotel.checkInHour,
+      checkOutHour: hotel.checkOutHour,
+      defaultRoomPrice: hotel.defaultRoomPrice,
     );
   }
 

@@ -5,8 +5,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'app.dart';
 import 'core/services/interstitial_ad_service.dart';
-import 'services/adapty_service.dart';
 import 'services/cloud_sync_service.dart';
+import 'services/revenuecat_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,9 +19,9 @@ void main() async {
   InterstitialAdService.instance.loadAd(); // Pre-load interstitial
 
   try {
-    await AdaptyService.initialize();
+    await RevenueCatService.initialize();
   } catch (e) {
-    debugPrint('[Adapty] initialize failed: $e');
+    debugPrint('[RevenueCat] initialize failed: $e');
   }
 
   runApp(

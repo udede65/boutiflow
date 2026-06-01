@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/localization/app_localizations.dart';
 import '../../core/theme/neo_brutalist_theme.dart';
-import '../../services/adapty_service.dart';
+import '../../services/revenuecat_service.dart';
 import 'paywall_provider.dart';
 
 class PaywallPage extends ConsumerStatefulWidget {
@@ -35,7 +35,7 @@ class _PaywallPageState extends ConsumerState<PaywallPage> {
     final activeProduct =
         paywallState.products.isNotEmpty ? paywallState.products.first : null;
     final isBusy = _isLoading || paywallState.isLoading;
-    final productPrice = activeProduct?.price.localizedString ?? '\$29.99';
+    final productPrice = activeProduct?.storeProduct.priceString ?? '\$29.99';
 
     // If already premium, show success
     if (isPremium) {
@@ -283,7 +283,7 @@ class _PaywallPageState extends ConsumerState<PaywallPage> {
 
   String _localizedPaywallError(BuildContext context, String error) {
     const messages = {
-      AdaptyService.errorNotConfigured: {
+      RevenueCatService.errorNotConfigured: {
         'en': 'Purchases are not configured yet.',
         'tr': 'Satın alma henüz yapılandırılmadı.',
         'de': 'Käufe sind noch nicht konfiguriert.',
@@ -291,7 +291,7 @@ class _PaywallPageState extends ConsumerState<PaywallPage> {
         'fr': 'Les achats ne sont pas encore configurés.',
         'es': 'Las compras aún no están configuradas.',
       },
-      AdaptyService.errorNoProducts: {
+      RevenueCatService.errorNoProducts: {
         'en': 'No purchasable product found for this paywall.',
         'tr': 'Bu paywall için satın alınabilir ürün bulunamadı.',
         'de': 'Für diese Paywall wurde kein kaufbares Produkt gefunden.',
@@ -299,7 +299,7 @@ class _PaywallPageState extends ConsumerState<PaywallPage> {
         'fr': 'Aucun produit achetable trouvé pour ce paywall.',
         'es': 'No se encontró ningún producto comprable para este paywall.',
       },
-      AdaptyService.errorPurchasePending: {
+      RevenueCatService.errorPurchasePending: {
         'en': 'Purchase is pending.',
         'tr': 'Satın alma işlemi beklemede.',
         'de': 'Der Kauf ist ausstehend.',
@@ -307,7 +307,7 @@ class _PaywallPageState extends ConsumerState<PaywallPage> {
         'fr': 'L’achat est en attente.',
         'es': 'La compra está pendiente.',
       },
-      AdaptyService.errorUnknownPurchaseState: {
+      RevenueCatService.errorUnknownPurchaseState: {
         'en': 'Unknown purchase state.',
         'tr': 'Bilinmeyen satın alma durumu.',
         'de': 'Unbekannter Kaufstatus.',
