@@ -3125,9 +3125,56 @@ class AppLocalizations {
   String tf(String key, [Map<String, Object?> params = const {}]) {
     var text = t(key);
     for (final entry in params.entries) {
-      text = text.replaceAll('{${entry.key}}', '${entry.value ?? ''}');
+      var val = entry.value;
+      if (entry.key == 'error' && val != null) {
+        val = _parseFriendlyError(val.toString());
+      }
+      text = text.replaceAll('{${entry.key}}', '${val ?? ''}');
     }
     return text;
+  }
+
+  String _parseFriendlyError(String rawError) {
+    final lower = rawError.toLowerCase();
+    final lang = locale.languageCode;
+
+    // Error 1: PGRST204 (Schema/Column missing)
+    if (lower.contains('pgrst204') || lower.contains("column of 'hotels' in the schema cache") || lower.contains("logo_url")) {
+      switch (lang) {
+        case 'tr':
+          return 'Veritabanı güncellemesi gerekiyor. Lütfen uygulamayı yeniden başlatın veya destekle iletişime geçin.';
+        case 'de':
+          return 'Datenbankschema-Aktualisierung erforderlich. Bitte starten Sie die App neu oder kontaktieren Sie den Support.';
+        case 'ru':
+          return 'Требуется обновление схемы базы данных. Пожалуйста, перезапустите приложение или обратитесь в поддержку.';
+        case 'fr':
+          return 'Mise à jour du schéma de base de données requise. Veuillez redémarrer l\'application ou contacter le support.';
+        case 'es':
+          return 'Se requiere actualizar el esquema de la base de datos. Reinicie la aplicación o contacte al soporte.';
+        default:
+          return 'Database schema update is required. Please restart the app or contact support.';
+      }
+    }
+
+    // Error 2: 42501 (RLS Policy Violation / Forbidden)
+    if (lower.contains('42501') || lower.contains('row-level security policy') || lower.contains('violates row-level security')) {
+      switch (lang) {
+        case 'tr':
+          return 'Bu otel profilini düzenleme yetkiniz yok veya oturum süreniz dolmuş.';
+        case 'de':
+          return 'Sie haben keine Berechtigung, dieses Hotelprofil zu ändern, oder der Zugriff ist abgelaufen.';
+        case 'ru':
+          return 'У вас нет прав на изменение этого профиля отеля или срок доступа истек.';
+        case 'fr':
+          return 'Vous n\'avez pas l\'autorisation de modifier ce profil d\'hôtel ou l\'accès a expiré.';
+        case 'es':
+          return 'No tiene permiso para modificar este perfil de hotel o el acceso ha expirado.';
+        default:
+          return 'You do not have permission to modify this hotel profile or access has expired.';
+      }
+    }
+
+    return rawError;
   }
 
   String upper(String key) => upperText(t(key));

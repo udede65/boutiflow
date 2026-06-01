@@ -54,6 +54,7 @@ class CloudSyncService {
       // 0. First push hotel data to Supabase
       final hotelData = await _localDb.getHotel();
       if (hotelData != null && hotelData['name'] != null) {
+        final currentUserId = _client.auth.currentUser?.id;
         await _client.from('hotels').upsert({
           'id': hotelId,
           'name': hotelData['name'],
@@ -63,6 +64,7 @@ class CloudSyncService {
           'check_out_hour': hotelData['checkOutHour'] ?? '11:00',
           'default_room_price': hotelData['defaultRoomPrice'] ?? 0.0,
           'logo_url': hotelData['logoUrl'], // New v10
+          if (currentUserId != null) 'user_id': currentUserId,
           'updated_at': DateTime.now().toIso8601String(),
         });
         pushed++;
@@ -192,11 +194,13 @@ class CloudSyncService {
     try {
       final hotelData = await _localDb.getHotel();
       final logoUrl = hotelData?['logoUrl'];
+      final currentUserId = _client.auth.currentUser?.id;
       await _client.from('hotels').upsert({
         'id': hotelId,
         'name': name,
         'currency': currency,
         'logo_url': logoUrl, // New v10
+        if (currentUserId != null) 'user_id': currentUserId,
         'updated_at': DateTime.now().toIso8601String(),
       });
     } catch (e) {
