@@ -182,6 +182,7 @@ class BoutiFlowService {
       paymentStatus: _mapPaymentStatus(booking.paymentStatus),
       priceTotal: booking.priceTotal ?? 0.0,
       source: booking.source,
+      isHourly: booking.isHourly,
       updatedAt: booking.updatedAt,
     );
   }
@@ -603,6 +604,7 @@ class BoutiFlowService {
     String source = 'direct',
     String status = 'reserved',
     String paymentStatus = 'unpaid',
+    bool isHourly = false,
     String? notes,
   }) async {
     final bookingId = id ?? _uuid();
@@ -617,6 +619,7 @@ class BoutiFlowService {
           status: Value(status),
           paymentStatus: Value(paymentStatus),
           source: Value(source),
+          isHourly: Value(isHourly),
           notes: Value(notes),
           updatedAt: Value(DateTime.now()),
         ));
@@ -649,6 +652,7 @@ class BoutiFlowService {
         status: Value(booking.status.name),
         paymentStatus: Value(booking.paymentStatus.name),
         source: Value(booking.source),
+        isHourly: Value(booking.isHourly),
         notes: Value(booking.notes),
         updatedAt: Value(DateTime.now()),
       ),
@@ -1071,6 +1075,37 @@ class BoutiFlowService {
 
   Future<void> deleteGuestDocument(String id) async {
     await (db.delete(db.guestDocuments)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<void> createBookingChannel({required String hotelId, required String name}) async {
+    // Stub
+  }
+
+  Future<void> deleteBookingChannel(String id) async {
+    // Stub
+  }
+
+  Future<List<entities.RoomServiceOrder>> fetchRoomServiceOrders(String hotelId) async {
+    return [];
+  }
+
+  Future<void> updateRoomServiceStatus(String orderId, String newStatus) async {
+    // Stub
+  }
+
+  Future<void> deleteRoomServiceOrder(String orderId) async {
+    // Stub
+  }
+
+  Future<void> createRoomServiceOrder({
+    required String hotelId,
+    required String roomId,
+    required String itemName,
+    required int quantity,
+    required double price,
+    String? notes,
+  }) async {
+    // Stub
   }
 
   String _uuid() {

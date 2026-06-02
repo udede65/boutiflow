@@ -38,3 +38,10 @@ final guestsProvider = FutureProvider<List<Guest>>((ref) {
   final service = ref.watch(boutiFlowServiceProvider);
   return service.fetchGuests(user.hotelId);
 });
+
+final roomServiceOrdersProvider = FutureProvider<List<RoomServiceOrder>>((ref) {
+  final user = ref.watch(appStateProvider).user;
+  if (user == null) return <RoomServiceOrder>[];
+  final service = ref.watch(boutiFlowServiceProvider);
+  return service.fetchRoomServiceOrders(user.hotelId);
+});

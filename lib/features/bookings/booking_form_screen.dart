@@ -42,6 +42,7 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
   final _priceController = TextEditingController();
   bool _isLoading = false;
   bool _isInit = true;
+  bool _isHourly = false;
 
   late BookingStatus _status; // Add status variable
   late String _source; // Add source variable
@@ -81,6 +82,7 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
         _priceController.text = booking.priceTotal?.toString() ?? '';
         _status = booking.status; // Load status
         _source = booking.source; // Load source
+        _isHourly = booking.isHourly; // Load isHourly
       });
     } catch (_) {
       // Booking not found
@@ -140,6 +142,65 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
           }
         } else {
           _checkOut = picked;
+        }
+      });
+    }
+  }
+
+  Future<void> _selectSingleDate(BuildContext context) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _checkIn,
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      setState(() {
+        _checkIn = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          _checkIn.hour,
+          _checkIn.minute,
+        );
+        _checkOut = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          _checkOut.hour,
+          _checkOut.minute,
+        );
+      });
+    }
+  }
+
+  Future<void> _selectTime(BuildContext context, bool isCheckIn) async {
+    final initialTime = TimeOfDay.fromDateTime(isCheckIn ? _checkIn : _checkOut);
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: initialTime,
+    );
+    if (picked != null) {
+      setState(() {
+        if (isCheckIn) {
+          _checkIn = DateTime(
+            _checkIn.year,
+            _checkIn.month,
+            _checkIn.day,
+            picked.hour,
+            picked.minute,
+          );
+          if (_checkOut.isBefore(_checkIn) || _checkOut.isAtSameMomentAs(_checkIn)) {
+            _checkOut = _checkIn.add(const Duration(hours: 2));
+          }
+        } else {
+          _checkOut = DateTime(
+            _checkOut.year,
+            _checkOut.month,
+            _checkOut.day,
+            picked.hour,
+            picked.minute,
+          );
         }
       });
     }
@@ -276,6 +337,42 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
         final service = ref.read(boutiFlowServiceProvider);
         final price = double.tryParse(_priceController.text);
 
+        // 1. Time range check (check-out must be after check-in)
+        if (_checkOut.isBefore(_checkIn) || _checkOut.isAtSameMomentAs(_checkIn)) {
+          setState(() => _isLoading = false);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.t('invalidTimeRange')),
+                backgroundColor: NeoBrutalistTheme.red,
+              ),
+            );
+          }
+          return;
+        }
+
+        // 2. Conflict/overlap validation
+        final bookings = await ref.read(bookingsProvider.future);
+        final hasConflict = bookings.any((b) =>
+            b.room.id == _selectedRoomId &&
+            b.id != widget.bookingId &&
+            b.status != BookingStatus.cancelled &&
+            _checkIn.isBefore(b.checkOut) &&
+            _checkOut.isAfter(b.checkIn));
+
+        if (hasConflict) {
+          setState(() => _isLoading = false);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.t('bookingOverlapConflict')),
+                backgroundColor: NeoBrutalistTheme.red,
+              ),
+            );
+          }
+          return;
+        }
+
         if (widget.bookingId != null) {
           // Update
           // We need to reconstruct the booking object.
@@ -285,7 +382,6 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
           // The service updateBooking takes a Booking entity.
 
           // Let's fetch the original first to be safe
-          final bookings = await ref.read(bookingsProvider.future);
           final original = bookings.firstWhere((b) => b.id == widget.bookingId);
 
           final updated = original.copyWith(
@@ -303,6 +399,7 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
             priceTotal: price ?? 0,
             status: _status, // Update status
             source: _source, // Update source
+            isHourly: _isHourly, // Update isHourly
           );
 
           await service.updateBooking(updated);
@@ -315,9 +412,6 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
           // Create - Check booking limit first
           final user = ref.read(appStateProvider).user;
           final userPlan = user?.plan ?? PlanType.free;
-          final bookingsAsync = ref.read(bookingsProvider);
-          final bookings =
-              bookingsAsync.hasValue ? (bookingsAsync.value ?? []) : [];
           final totalBookings = bookings.length;
 
           if (!PlanLimits.canAddBooking(userPlan, totalBookings)) {
@@ -344,6 +438,7 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
             checkOut: _checkOut,
             price: price,
             source: _source,
+            isHourly: _isHourly, // Create with isHourly
           );
 
           if (!ref.read(isProProvider)) {
@@ -593,78 +688,217 @@ class _BookingFormScreenState extends ConsumerState<BookingFormScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(l10n.upper('dates'),
-                        style: NeoBrutalistTheme.labelLarge),
-                    const SizedBox(height: 12),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () => _selectDate(context, true),
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: NeoBrutalistTheme.blue,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: NeoBrutalistTheme.black, width: 2),
-                              ),
-                              child: Column(
-                                children: [
-                                  const Icon(Icons.login_rounded,
-                                      color: NeoBrutalistTheme.white),
-                                  const SizedBox(height: 4),
-                                  Text(l10n.upper('checkIn'),
-                                      style: NeoBrutalistTheme.labelLarge
-                                          .copyWith(
-                                              color: NeoBrutalistTheme.white,
-                                              fontSize: 10)),
-                                  Text(
-                                    DateFormat('dd MMM').format(_checkIn),
-                                    style: NeoBrutalistTheme.titleMedium
-                                        .copyWith(
-                                            color: NeoBrutalistTheme.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                        Text(
+                          l10n.t('dates').toUpperCase(),
+                          style: NeoBrutalistTheme.labelLarge,
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () => _selectDate(context, false),
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: NeoBrutalistTheme.red,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: NeoBrutalistTheme.black, width: 2),
-                              ),
-                              child: Column(
-                                children: [
-                                  const Icon(Icons.logout_rounded,
-                                      color: NeoBrutalistTheme.white),
-                                  const SizedBox(height: 4),
-                                  Text(l10n.upper('checkOut'),
-                                      style: NeoBrutalistTheme.labelLarge
-                                          .copyWith(
-                                              color: NeoBrutalistTheme.white,
-                                              fontSize: 10)),
-                                  Text(
-                                    DateFormat('dd MMM').format(_checkOut),
-                                    style: NeoBrutalistTheme.titleMedium
-                                        .copyWith(
-                                            color: NeoBrutalistTheme.white),
-                                  ),
-                                ],
-                              ),
+                        Row(
+                          children: [
+                            Text(
+                              l10n.t('hourlyBooking'),
+                              style: NeoBrutalistTheme.bodyMedium,
                             ),
-                          ),
+                            const SizedBox(width: 8),
+                            Switch(
+                              value: _isHourly,
+                              activeColor: NeoBrutalistTheme.blue,
+                              onChanged: (val) {
+                                setState(() {
+                                  _isHourly = val;
+                                  if (_isHourly) {
+                                    final now = DateTime.now();
+                                    _checkIn = DateTime(now.year, now.month, now.day, 15, 0);
+                                    _checkOut = DateTime(now.year, now.month, now.day, 17, 0);
+                                  } else {
+                                    final now = DateTime.now();
+                                    _checkIn = DateTime(now.year, now.month, now.day);
+                                    _checkOut = _checkIn.add(const Duration(days: 1));
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
+                    const Divider(color: NeoBrutalistTheme.black, thickness: 1.5),
+                    const SizedBox(height: 12),
+                    if (_isHourly) ...[
+                      GestureDetector(
+                        onTap: () => _selectSingleDate(context),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: NeoBrutalistTheme.yellow,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                color: NeoBrutalistTheme.black, width: 2),
+                          ),
+                          child: Column(
+                            children: [
+                              const Icon(Icons.calendar_month_rounded,
+                                  color: NeoBrutalistTheme.black),
+                              const SizedBox(height: 4),
+                              Text(l10n.upper('date'),
+                                  style: NeoBrutalistTheme.labelLarge
+                                      .copyWith(
+                                          color: NeoBrutalistTheme.black,
+                                          fontSize: 10)),
+                              Text(
+                                DateFormat('dd MMMM yyyy', l10n.locale.languageCode).format(_checkIn),
+                                style: NeoBrutalistTheme.titleMedium
+                                    .copyWith(
+                                        color: NeoBrutalistTheme.black),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => _selectTime(context, true),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: NeoBrutalistTheme.blue,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: NeoBrutalistTheme.black, width: 2),
+                                ),
+                                child: Column(
+                                  children: [
+                                    const Icon(Icons.access_time_rounded,
+                                        color: NeoBrutalistTheme.white),
+                                    const SizedBox(height: 4),
+                                    Text(l10n.upper('checkInTime'),
+                                        style: NeoBrutalistTheme.labelLarge
+                                            .copyWith(
+                                                color: NeoBrutalistTheme.white,
+                                                fontSize: 10)),
+                                    Text(
+                                      DateFormat.Hm(l10n.locale.languageCode).format(_checkIn),
+                                      style: NeoBrutalistTheme.titleMedium
+                                          .copyWith(
+                                              color: NeoBrutalistTheme.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => _selectTime(context, false),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: NeoBrutalistTheme.red,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: NeoBrutalistTheme.black, width: 2),
+                                ),
+                                child: Column(
+                                  children: [
+                                    const Icon(Icons.access_time_rounded,
+                                        color: NeoBrutalistTheme.white),
+                                    const SizedBox(height: 4),
+                                    Text(l10n.upper('checkOutTime'),
+                                        style: NeoBrutalistTheme.labelLarge
+                                            .copyWith(
+                                                color: NeoBrutalistTheme.white,
+                                                fontSize: 10)),
+                                    Text(
+                                      DateFormat.Hm(l10n.locale.languageCode).format(_checkOut),
+                                      style: NeoBrutalistTheme.titleMedium
+                                          .copyWith(
+                                              color: NeoBrutalistTheme.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ] else ...[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => _selectDate(context, true),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: NeoBrutalistTheme.blue,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: NeoBrutalistTheme.black, width: 2),
+                                ),
+                                child: Column(
+                                  children: [
+                                    const Icon(Icons.login_rounded,
+                                        color: NeoBrutalistTheme.white),
+                                    const SizedBox(height: 4),
+                                    Text(l10n.upper('checkIn'),
+                                        style: NeoBrutalistTheme.labelLarge
+                                            .copyWith(
+                                                color: NeoBrutalistTheme.white,
+                                                fontSize: 10)),
+                                    Text(
+                                      DateFormat('dd MMM').format(_checkIn),
+                                      style: NeoBrutalistTheme.titleMedium
+                                          .copyWith(
+                                              color: NeoBrutalistTheme.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => _selectDate(context, false),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: NeoBrutalistTheme.red,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: NeoBrutalistTheme.black, width: 2),
+                                ),
+                                child: Column(
+                                  children: [
+                                    const Icon(Icons.logout_rounded,
+                                        color: NeoBrutalistTheme.white),
+                                    const SizedBox(height: 4),
+                                    Text(l10n.upper('checkOut'),
+                                        style: NeoBrutalistTheme.labelLarge
+                                            .copyWith(
+                                                color: NeoBrutalistTheme.white,
+                                                fontSize: 10)),
+                                    Text(
+                                      DateFormat('dd MMM').format(_checkOut),
+                                      style: NeoBrutalistTheme.titleMedium
+                                          .copyWith(
+                                              color: NeoBrutalistTheme.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),

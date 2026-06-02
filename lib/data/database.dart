@@ -86,6 +86,7 @@ class Bookings extends Table {
   TextColumn get paymentStatus =>
       text().withDefault(const Constant('unpaid'))();
   TextColumn get notes => text().nullable()();
+  BoolColumn get isHourly => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().nullable()(); // New
 
@@ -196,7 +197,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 10; // Bumped to 10 for logoUrl
+  int get schemaVersion => 11; // Bumped to 11 for hourly bookings
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -305,6 +306,12 @@ class AppDatabase extends _$AppDatabase {
             // Migration to v10
             try {
               await m.addColumn(hotels, hotels.logoUrl);
+            } catch (_) {}
+          }
+          if (from < 11) {
+            // Migration to v11
+            try {
+              await m.addColumn(bookings, bookings.isHourly);
             } catch (_) {}
           }
         },

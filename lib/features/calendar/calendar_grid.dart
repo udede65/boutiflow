@@ -403,6 +403,16 @@ class _CalendarGridState extends State<CalendarGrid> {
               ),
               overflow: TextOverflow.ellipsis,
             ),
+            if (booking.isHourly)
+              Text(
+                '${booking.checkIn.hour.toString().padLeft(2, '0')}:${booking.checkIn.minute.toString().padLeft(2, '0')} - ${booking.checkOut.hour.toString().padLeft(2, '0')}:${booking.checkOut.minute.toString().padLeft(2, '0')}',
+                style: GoogleFonts.inter(
+                  color: Colors.black54,
+                  fontSize: 8,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
             if (booking.priceTotal != null)
               Text(
                 '${booking.priceTotal!.toStringAsFixed(0)} ${widget.currencySymbol}',
@@ -424,8 +434,9 @@ class _CalendarGridState extends State<CalendarGrid> {
     try {
       return widget.bookings.firstWhere((b) =>
           b.room.id == room.id &&
-          (date.isAtSameMomentAs(b.checkIn) ||
-              (date.isAfter(b.checkIn) && date.isBefore(b.checkOut))));
+          b.status != BookingStatus.cancelled &&
+          b.checkIn.isBefore(date.add(const Duration(days: 1))) &&
+          b.checkOut.isAfter(date));
     } catch (_) {
       return null;
     }
@@ -509,7 +520,9 @@ class _CalendarGridState extends State<CalendarGrid> {
               title: Text(l10n.t('editBookingTitle'),
                   style: GoogleFonts.inter(color: Colors.white)),
               subtitle: Text(
-                  '${_formatDate(context, booking.checkIn)} - ${_formatDate(context, booking.checkOut)}',
+                  booking.isHourly
+                      ? '${_formatDate(context, booking.checkIn)} • ${booking.checkIn.hour.toString().padLeft(2, '0')}:${booking.checkIn.minute.toString().padLeft(2, '0')} - ${booking.checkOut.hour.toString().padLeft(2, '0')}:${booking.checkOut.minute.toString().padLeft(2, '0')}'
+                      : '${_formatDate(context, booking.checkIn)} - ${_formatDate(context, booking.checkOut)}',
                   style: GoogleFonts.inter(color: Colors.white54)),
               onTap: () {
                 Navigator.pop(context);

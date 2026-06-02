@@ -120,6 +120,7 @@ class Booking {
     this.paymentStatus = PaymentStatus.unpaid,
     this.priceTotal = 0.0,
     this.source = 'direct',
+    this.isHourly = false,
     this.notes,
     this.updatedAt,
   });
@@ -133,6 +134,7 @@ class Booking {
   final PaymentStatus paymentStatus;
   final double? priceTotal;
   final String source; // direct, airbnb, etc.
+  final bool isHourly;
   final String? notes;
   final DateTime? updatedAt;
 
@@ -146,6 +148,7 @@ class Booking {
     PaymentStatus? paymentStatus,
     double? priceTotal,
     String? source,
+    bool? isHourly,
     String? notes,
     DateTime? updatedAt,
   }) {
@@ -159,6 +162,7 @@ class Booking {
       paymentStatus: paymentStatus ?? this.paymentStatus,
       priceTotal: priceTotal ?? this.priceTotal,
       source: source ?? this.source,
+      isHourly: isHourly ?? this.isHourly,
       notes: notes ?? this.notes,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -415,4 +419,42 @@ String getCurrencySymbol(String currencyCode) {
     default:
       return currencyCode;
   }
+}
+
+class BookingChannel {
+  final String id;
+  final String name;
+  final bool isDefault;
+
+  const BookingChannel({
+    required this.id,
+    required this.name,
+    this.isDefault = false,
+  });
+}
+
+enum RoomServiceStatus { pending, preparing, delivered, cancelled }
+
+class RoomServiceOrder {
+  final String id;
+  final String hotelId;
+  final String roomId;
+  final String itemName;
+  final int quantity;
+  final double price;
+  final String? notes;
+  final RoomServiceStatus status;
+  final DateTime createdAt;
+
+  const RoomServiceOrder({
+    required this.id,
+    required this.hotelId,
+    required this.roomId,
+    required this.itemName,
+    required this.quantity,
+    required this.price,
+    this.notes,
+    required this.status,
+    required this.createdAt,
+  });
 }

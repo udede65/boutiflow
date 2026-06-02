@@ -2122,6 +2122,16 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
       'notes', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _isHourlyMeta =
+      const VerificationMeta('isHourly');
+  @override
+  late final GeneratedColumn<bool> isHourly = GeneratedColumn<bool>(
+      'is_hourly', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_hourly" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
   @override
@@ -2149,6 +2159,7 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
         priceTotal,
         paymentStatus,
         notes,
+        isHourly,
         createdAt,
         updatedAt
       ];
@@ -2221,6 +2232,10 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
       context.handle(
           _notesMeta, notes.isAcceptableOrUnknown(data['notes']!, _notesMeta));
     }
+    if (data.containsKey('is_hourly')) {
+      context.handle(_isHourlyMeta,
+          isHourly.isAcceptableOrUnknown(data['is_hourly']!, _isHourlyMeta));
+    }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -2260,6 +2275,8 @@ class $BookingsTable extends Bookings with TableInfo<$BookingsTable, Booking> {
           .read(DriftSqlType.string, data['${effectivePrefix}payment_status'])!,
       notes: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}notes']),
+      isHourly: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_hourly'])!,
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       updatedAt: attachedDatabase.typeMapping
@@ -2285,6 +2302,7 @@ class Booking extends DataClass implements Insertable<Booking> {
   final double? priceTotal;
   final String paymentStatus;
   final String? notes;
+  final bool isHourly;
   final DateTime createdAt;
   final DateTime? updatedAt;
   const Booking(
@@ -2299,6 +2317,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       this.priceTotal,
       required this.paymentStatus,
       this.notes,
+      required this.isHourly,
       required this.createdAt,
       this.updatedAt});
   @override
@@ -2319,6 +2338,7 @@ class Booking extends DataClass implements Insertable<Booking> {
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
     }
+    map['is_hourly'] = Variable<bool>(isHourly);
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || updatedAt != null) {
       map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -2342,6 +2362,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       paymentStatus: Value(paymentStatus),
       notes:
           notes == null && nullToAbsent ? const Value.absent() : Value(notes),
+      isHourly: Value(isHourly),
       createdAt: Value(createdAt),
       updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
@@ -2364,6 +2385,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       priceTotal: serializer.fromJson<double?>(json['priceTotal']),
       paymentStatus: serializer.fromJson<String>(json['paymentStatus']),
       notes: serializer.fromJson<String?>(json['notes']),
+      isHourly: serializer.fromJson<bool>(json['isHourly']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
@@ -2383,6 +2405,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       'priceTotal': serializer.toJson<double?>(priceTotal),
       'paymentStatus': serializer.toJson<String>(paymentStatus),
       'notes': serializer.toJson<String?>(notes),
+      'isHourly': serializer.toJson<bool>(isHourly),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
@@ -2400,6 +2423,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           Value<double?> priceTotal = const Value.absent(),
           String? paymentStatus,
           Value<String?> notes = const Value.absent(),
+          bool? isHourly,
           DateTime? createdAt,
           Value<DateTime?> updatedAt = const Value.absent()}) =>
       Booking(
@@ -2414,6 +2438,7 @@ class Booking extends DataClass implements Insertable<Booking> {
         priceTotal: priceTotal.present ? priceTotal.value : this.priceTotal,
         paymentStatus: paymentStatus ?? this.paymentStatus,
         notes: notes.present ? notes.value : this.notes,
+        isHourly: isHourly ?? this.isHourly,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
       );
@@ -2433,6 +2458,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           ? data.paymentStatus.value
           : this.paymentStatus,
       notes: data.notes.present ? data.notes.value : this.notes,
+      isHourly: data.isHourly.present ? data.isHourly.value : this.isHourly,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -2452,6 +2478,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           ..write('priceTotal: $priceTotal, ')
           ..write('paymentStatus: $paymentStatus, ')
           ..write('notes: $notes, ')
+          ..write('isHourly: $isHourly, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -2471,6 +2498,7 @@ class Booking extends DataClass implements Insertable<Booking> {
       priceTotal,
       paymentStatus,
       notes,
+      isHourly,
       createdAt,
       updatedAt);
   @override
@@ -2488,6 +2516,7 @@ class Booking extends DataClass implements Insertable<Booking> {
           other.priceTotal == this.priceTotal &&
           other.paymentStatus == this.paymentStatus &&
           other.notes == this.notes &&
+          other.isHourly == this.isHourly &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -2504,6 +2533,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
   final Value<double?> priceTotal;
   final Value<String> paymentStatus;
   final Value<String?> notes;
+  final Value<bool> isHourly;
   final Value<DateTime> createdAt;
   final Value<DateTime?> updatedAt;
   final Value<int> rowid;
@@ -2519,6 +2549,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     this.priceTotal = const Value.absent(),
     this.paymentStatus = const Value.absent(),
     this.notes = const Value.absent(),
+    this.isHourly = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -2535,6 +2566,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     this.priceTotal = const Value.absent(),
     this.paymentStatus = const Value.absent(),
     this.notes = const Value.absent(),
+    this.isHourly = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -2556,6 +2588,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     Expression<double>? priceTotal,
     Expression<String>? paymentStatus,
     Expression<String>? notes,
+    Expression<bool>? isHourly,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<int>? rowid,
@@ -2572,6 +2605,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       if (priceTotal != null) 'price_total': priceTotal,
       if (paymentStatus != null) 'payment_status': paymentStatus,
       if (notes != null) 'notes': notes,
+      if (isHourly != null) 'is_hourly': isHourly,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (rowid != null) 'rowid': rowid,
@@ -2590,6 +2624,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       Value<double?>? priceTotal,
       Value<String>? paymentStatus,
       Value<String?>? notes,
+      Value<bool>? isHourly,
       Value<DateTime>? createdAt,
       Value<DateTime?>? updatedAt,
       Value<int>? rowid}) {
@@ -2605,6 +2640,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
       priceTotal: priceTotal ?? this.priceTotal,
       paymentStatus: paymentStatus ?? this.paymentStatus,
       notes: notes ?? this.notes,
+      isHourly: isHourly ?? this.isHourly,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       rowid: rowid ?? this.rowid,
@@ -2647,6 +2683,9 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (isHourly.present) {
+      map['is_hourly'] = Variable<bool>(isHourly.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -2673,6 +2712,7 @@ class BookingsCompanion extends UpdateCompanion<Booking> {
           ..write('priceTotal: $priceTotal, ')
           ..write('paymentStatus: $paymentStatus, ')
           ..write('notes: $notes, ')
+          ..write('isHourly: $isHourly, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('rowid: $rowid')
@@ -7408,6 +7448,7 @@ typedef $$BookingsTableCreateCompanionBuilder = BookingsCompanion Function({
   Value<double?> priceTotal,
   Value<String> paymentStatus,
   Value<String?> notes,
+  Value<bool> isHourly,
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
   Value<int> rowid,
@@ -7424,6 +7465,7 @@ typedef $$BookingsTableUpdateCompanionBuilder = BookingsCompanion Function({
   Value<double?> priceTotal,
   Value<String> paymentStatus,
   Value<String?> notes,
+  Value<bool> isHourly,
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
   Value<int> rowid,
@@ -7523,6 +7565,9 @@ class $$BookingsTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isHourly => $composableBuilder(
+      column: $table.isHourly, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
@@ -7646,6 +7691,9 @@ class $$BookingsTableOrderingComposer
   ColumnOrderings<String> get notes => $composableBuilder(
       column: $table.notes, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get isHourly => $composableBuilder(
+      column: $table.isHourly, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
@@ -7745,6 +7793,9 @@ class $$BookingsTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<bool> get isHourly =>
+      $composableBuilder(column: $table.isHourly, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -7869,6 +7920,7 @@ class $$BookingsTableTableManager extends RootTableManager<
             Value<double?> priceTotal = const Value.absent(),
             Value<String> paymentStatus = const Value.absent(),
             Value<String?> notes = const Value.absent(),
+            Value<bool> isHourly = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime?> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -7885,6 +7937,7 @@ class $$BookingsTableTableManager extends RootTableManager<
             priceTotal: priceTotal,
             paymentStatus: paymentStatus,
             notes: notes,
+            isHourly: isHourly,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,
@@ -7901,6 +7954,7 @@ class $$BookingsTableTableManager extends RootTableManager<
             Value<double?> priceTotal = const Value.absent(),
             Value<String> paymentStatus = const Value.absent(),
             Value<String?> notes = const Value.absent(),
+            Value<bool> isHourly = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
             Value<DateTime?> updatedAt = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -7917,6 +7971,7 @@ class $$BookingsTableTableManager extends RootTableManager<
             priceTotal: priceTotal,
             paymentStatus: paymentStatus,
             notes: notes,
+            isHourly: isHourly,
             createdAt: createdAt,
             updatedAt: updatedAt,
             rowid: rowid,

@@ -116,8 +116,21 @@ class NeoBrutalistTheme {
         color: black,
       );
 
+  static TextStyle get bodySmall => GoogleFonts.outfit(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: black,
+      );
+
   static TextStyle get labelLarge => GoogleFonts.outfit(
         fontSize: 14,
+        fontWeight: FontWeight.w700,
+        color: black,
+        letterSpacing: 0.5,
+      );
+
+  static TextStyle get labelSmall => GoogleFonts.outfit(
+        fontSize: 10,
         fontWeight: FontWeight.w700,
         color: black,
         letterSpacing: 0.5,

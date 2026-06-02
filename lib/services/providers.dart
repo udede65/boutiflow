@@ -48,3 +48,12 @@ final reportsProvider = FutureProvider<entities.ReportSummary>((ref) async {
   final service = ref.watch(boutiFlowServiceProvider);
   return service.fetchReports(user.hotelId);
 });
+
+final bookingChannelsProvider = FutureProvider<List<entities.BookingChannel>>((ref) async {
+  return [
+    const entities.BookingChannel(id: 'direct', name: 'Direct', isDefault: true),
+    const entities.BookingChannel(id: 'airbnb', name: 'Airbnb', isDefault: true),
+    const entities.BookingChannel(id: 'booking_com', name: 'Booking.com', isDefault: true),
+    const entities.BookingChannel(id: 'expedia', name: 'Expedia', isDefault: true),
+  ];
+});

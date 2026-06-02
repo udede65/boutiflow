@@ -208,6 +208,55 @@ class _BookingCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 6),
+                  if (booking.isHourly)
+                    Row(
+                      children: [
+                        const Icon(Icons.access_time_rounded,
+                            size: 14, color: NeoBrutalistTheme.grey),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${booking.checkIn.hour.toString().padLeft(2, '0')}:${booking.checkIn.minute.toString().padLeft(2, '0')} - ${booking.checkOut.hour.toString().padLeft(2, '0')}:${booking.checkOut.minute.toString().padLeft(2, '0')}',
+                          style: NeoBrutalistTheme.bodyMedium.copyWith(
+                            color: NeoBrutalistTheme.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: NeoBrutalistTheme.orange.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                                color: NeoBrutalistTheme.orange.withOpacity(0.3),
+                                width: 1),
+                          ),
+                          child: Text(
+                            l10n.t('hourlyBooking').toUpperCase(),
+                            style: NeoBrutalistTheme.labelLarge.copyWith(
+                              fontSize: 9,
+                              color: NeoBrutalistTheme.orange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Row(
+                      children: [
+                        const Icon(Icons.calendar_month_rounded,
+                            size: 14, color: NeoBrutalistTheme.grey),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${DateFormat.yMMMd(Localizations.localeOf(context).languageCode).format(booking.checkIn)} - ${DateFormat.yMMMd(Localizations.localeOf(context).languageCode).format(booking.checkOut)}',
+                          style: NeoBrutalistTheme.bodyMedium
+                              .copyWith(color: NeoBrutalistTheme.grey),
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ),

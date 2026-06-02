@@ -113,12 +113,13 @@ class CloudSyncService {
           'hotel_id': hotelId,
           'room_id': booking.room.id,
           'guest_id': booking.guest.id,
-          'check_in': booking.checkIn.toIso8601String().substring(0, 10),
-          'check_out': booking.checkOut.toIso8601String().substring(0, 10),
+          'check_in': booking.checkIn.toIso8601String(),
+          'check_out': booking.checkOut.toIso8601String(),
           'price_total': booking.priceTotal,
           'status': booking.status.name,
           'payment_status': booking.paymentStatus.name,
           'source': booking.source,
+          'is_hourly': booking.isHourly,
           'notes': booking.notes,
           'updated_at': DateTime.now().toIso8601String(),
         });
@@ -378,6 +379,7 @@ class CloudSyncService {
             source: row['source'] ?? 'direct',
             status: row['status'] ?? 'reserved',
             paymentStatus: row['payment_status'] ?? 'unpaid',
+            isHourly: row['is_hourly'] as bool? ?? false,
             notes: row['notes'],
           );
           restored++;
